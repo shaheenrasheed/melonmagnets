@@ -80,13 +80,13 @@ export default function App() {
   }, []);
 
   const handleProductInquiry = useCallback((product: any) => {
-    const message = `Hi Melon Magnets 👋\n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details. Thank you!`;
+    const message = `Hi Melon Magnets \n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details. Thank you!`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   }, [whatsappNumber]);
 
   const handleBulkSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const message = `Hi Melon Magnets 👋\n\nI'm interested in placing a bulk order.\n\nEstimated Quantity: ${quoteDetails.qty}\nSize Preference: ${quoteDetails.size}\nDelivery Location: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline details.`;
+    const message = `Hi Melon Magnets \n\nI'm interested in placing a bulk order.\n\nEstimated Quantity: ${quoteDetails.qty}\nSize Preference: ${quoteDetails.size}\nDelivery Location: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline details.`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
     setIsQuoteModalOpen(false);
   };
