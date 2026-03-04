@@ -11,7 +11,7 @@ const RubberMagnets = [
   { id: 2, name: 'Compact Rectangle', sizeIn: '1.97" × 2.95"', sizeCm: '5 × 7.5 cm', price: '₹30', media: '/videos/product2.mp4', fallback: '/images/product2.jpg' },
   { id: 3, name: 'Large Square', sizeIn: '2.75" × 2.75"', sizeCm: '6.99 × 6.99 cm', price: '₹30', media: '/videos/product4.mp4', fallback: '/images/product4.jpg' },
   { id: 4, name: 'Landscape Wide', sizeIn: '4" × 3"', sizeCm: '10.16 × 7.62 cm', price: '₹52', media: '/videos/product5.mp4', fallback: '/images/product5.jpg' },
-  { id: 5, name: 'Sleek Rectangle', sizeIn: '1.97" × 3.15"', sizeCm: '5 × 8 cm', price: '₹55', media: '/videos/product6.mp4', fallback: '/images/product6.jpg' },
+  { id: 5, name: 'Sleek Rectangle', sizeIn: '1.97" × 3.15"', sizeCm: '5 × 8 cm', price: '₹60', media: '/videos/product6.mp4', fallback: '/images/product6.jpg' },
 ];
 
 const PremiumMagnets = [
@@ -78,14 +78,29 @@ export default function App() {
     aboutRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
+  /** * GA4 EVENT TRACKING
+   * Tracks the WhatsApp click as a custom event.
+   */
+  const trackConversion = (label: string) => {
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'whatsapp_conversion', {
+        'event_category': 'Conversion',
+        'event_label': label,
+        'value': 1.0 // Optional: assign a weight to this action
+      });
+    }
+  };
+
   const handleProductInquiry = useCallback((product: any) => {
-    const message = `Hi Melon Magnets \n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details. Thank you!`;
+    trackConversion(`Inquiry: ${product.name}`);
+    const message = `Hi Melon Magnets 👋\n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details. Thank you!`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   }, [whatsappNumber]);
 
   const handleBulkSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const message = `Hi Melon Magnets \n\nI'm interested in placing a bulk order.\n\nEstimated Quantity: ${quoteDetails.qty}\nSize Preference: ${quoteDetails.size}\nDelivery Location: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline details.`;
+    trackConversion('Bulk Quote Success');
+    const message = `Hi Melon Magnets 👋\n\nI'm interested in placing a bulk order.\n\nEstimated Quantity: ${quoteDetails.qty}\nSize Preference: ${quoteDetails.size}\nDelivery Location: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline details.`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
     setIsQuoteModalOpen(false);
   };
@@ -113,8 +128,11 @@ export default function App() {
               <span className="text-lg md:text-3xl font-['Inter'] font-medium tracking-tight text-melon-green uppercase truncate">Melon<span className="text-melon-orange">Magnets</span></span>
             </button>
             <button 
-              onClick={() => setIsQuoteModalOpen(true)} 
-              className="bg-[#25D366] text-white px-3 md:px-5 py-2.5 rounded-full text-[8px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-green-600 transition-all shadow-md flex items-center gap-1.5 active:scale-95 outline-none shrink-0"
+              onClick={() => {
+                trackConversion('Navbar Quote Click');
+                setIsQuoteModalOpen(true);
+              }} 
+              className="bg-[#25D366] text-white px-3 md:px-5 py-2.5 rounded-full text-[8px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-green-600 transition-all shadow-md flex items-center gap-1.5 active:scale-95 outline-none shrink-0 font-bold"
             >
               <WhatsAppLogo size={14} /> Get Quote
             </button>
@@ -156,7 +174,13 @@ export default function App() {
                  <div className="mt-3 px-3 py-1 bg-slate-800 text-white text-[8px] md:text-[10px] font-black uppercase rounded-full tracking-widest shadow-sm">Min: 150 Units</div>
               </div>
               <div className="p-4 md:p-8 flex flex-col flex-1 justify-center">
-                <button onClick={() => setIsQuoteModalOpen(true)} className="w-full border-2 border-[#25D366] text-[#25D366] py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-[9px] md:text-xs uppercase tracking-widest hover:bg-[#25D366] hover:text-white transition-all flex items-center justify-center gap-2 active:scale-95 outline-none font-bold">
+                <button 
+                  onClick={() => {
+                    trackConversion('Grid Request Quote Click');
+                    setIsQuoteModalOpen(true);
+                  }} 
+                  className="w-full border-2 border-[#25D366] text-[#25D366] py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-[9px] md:text-xs uppercase tracking-widest hover:bg-[#25D366] hover:text-white transition-all flex items-center justify-center gap-2 active:scale-95 outline-none font-bold"
+                >
                   <WhatsAppLogo size={16} /> Request Quote
                 </button>
               </div>
@@ -213,7 +237,7 @@ export default function App() {
               </div>
               <div className="flex flex-col justify-center space-y-6 md:border-l md:border-white/10 md:pl-12 pt-6 md:pt-0">
                 <a href="mailto:hello@melonmagnets.com" className="flex items-center gap-4 text-[10px] font-normal text-white uppercase tracking-widest truncate hover:text-melon-orange transition-colors outline-none">
-                  <div className="bg-white/10 p-2 rounded-lg"><Mail size={16} className="text-melon-orange" /></div>
+                  <div className="bg-white/10 p-2 rounded-lg shrink-0"><Mail size={16} className="text-melon-orange" /></div>
                   hello@melonmagnets.com
                 </a>
                 <div className="flex items-start gap-4 text-[10px] font-normal text-slate-400 uppercase tracking-widest leading-loose text-left">
@@ -230,7 +254,13 @@ export default function App() {
             <a href={instaLink} target="_blank" rel="noopener noreferrer" className="p-3 rounded-full bg-slate-50 hover:bg-melon-orange hover:text-white transition-all shadow-sm outline-none">
               <Instagram size={20} />
             </a>
-            <button onClick={() => setIsQuoteModalOpen(true)} className="p-1 hover:scale-110 transition-transform active:scale-95 outline-none bg-transparent border-none">
+            <button 
+              onClick={() => {
+                trackConversion('Footer WhatsApp Button');
+                setIsQuoteModalOpen(true);
+              }} 
+              className="p-1 hover:scale-110 transition-transform active:scale-95 outline-none bg-transparent border-none"
+            >
               <WhatsAppLogo size={40} />
             </button>
           </div>
