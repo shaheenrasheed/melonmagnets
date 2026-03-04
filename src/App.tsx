@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, memo } from 'react';
 import { 
   Instagram, Mail, MapPin, Sparkles, Globe, 
-  CheckCircle2, Ruler, X, Calendar, Send
+  CheckCircle2, Ruler, X, Calendar
 } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
@@ -54,7 +54,7 @@ const MediaCard = memo(({ videoSrc, imageSrc, name }: { videoSrc: string; imageS
 const SectionHeader = ({ id, title, description, tags }: { id: string, title: string, description: string, tags?: string[] }) => (
   <div className="bg-orange-50 p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] mb-6 md:mb-10 border border-orange-100">
     <span className="text-melon-orange font-black text-[9px] tracking-[0.2em] uppercase mb-2 block font-bold">Category {id}</span>
-    <h2 className="text-2xl md:text-4xl font-['Outfit'] font-black uppercase mb-3 text-slate-800 tracking-tight leading-none">{title}</h2>
+    <h2 className="text-2xl md:text-4xl font-['Outfit'] font-black uppercase mb-3 text-slate-800 tracking-tight leading-none font-bold">{title}</h2>
     <p className="text-slate-600 text-xs md:text-sm leading-relaxed mb-6 italic">{description}</p>
     {tags && (
       <div className="flex flex-wrap gap-2">
@@ -73,22 +73,20 @@ export default function App() {
   
   // Modal State
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-  const [quoteDetails, setQuoteDetails] = useState({ qty: '', location: '', date: '' });
+  const [quoteDetails, setQuoteDetails] = useState({ qty: '', location: '', date: '', size: '' });
 
   const scrollToAbout = useCallback(() => {
     aboutRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  /** IMPROVED PRODUCT MESSAGE FORMATTING */
   const handleProductInquiry = useCallback((product: any) => {
     const message = `Hi Melon Magnets 👋\n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details. Thank you!`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   }, [whatsappNumber]);
 
-  /** IMPROVED BULK MESSAGE FORMATTING */
   const handleBulkSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const message = `Hi Melon Magnets 👋\n\nI'm interested in placing a bulk order.\n\nEstimated Quantity: ${quoteDetails.qty}\nDelivery Location: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline details.`;
+    const message = `Hi Melon Magnets 👋\n\nI'm interested in placing a bulk order.\n\nEstimated Quantity: ${quoteDetails.qty}\nSize Preference: ${quoteDetails.size}\nDelivery Location: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline details.`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
     setIsQuoteModalOpen(false);
   };
@@ -100,7 +98,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white font-['Plus_Jakarta_Sans'] text-slate-900 relative overflow-x-hidden">
-      {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
         <div className="absolute top-[5%] left-[-10%] w-72 h-72 bg-melon-orange/5 rounded-full blur-[100px] animate-float" />
         <div className="absolute bottom-[10%] right-[-10%] w-80 h-80 bg-melon-green/5 rounded-full blur-[100px] animate-float-delayed" />
@@ -118,7 +115,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => setIsQuoteModalOpen(true)} 
-              className="bg-[#25D366] text-white px-5 py-2.5 rounded-full text-[9px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-green-600 transition-all shadow-md flex items-center gap-2 active:scale-95 outline-none"
+              className="bg-[#25D366] text-white px-5 py-2.5 rounded-full text-[9px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-green-600 transition-all shadow-md flex items-center gap-2 active:scale-95 outline-none font-bold"
             >
               <WhatsAppLogo size={16} /> Get Quote
             </button>
@@ -134,7 +131,6 @@ export default function App() {
           </div>
         </header>
 
-        {/* --- CATEGORY 01 --- */}
         <section className="max-w-6xl mx-auto px-4 md:px-6 mb-20">
           <SectionHeader id="01" title="Flexible Rubber Magnets" description="Thin, lightweight, bendable. Ideal for travel souvenirs and bulk gifting." tags={['Travel', 'Souvenirs', 'Bulk', 'Corporate']} />
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
@@ -168,12 +164,11 @@ export default function App() {
           </div>
         </section>
 
-        {/* --- CATEGORY 02 --- */}
         <section className="max-w-6xl mx-auto px-4 md:px-6 mb-24">
           <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-stretch mb-10">
-            <div className="md:w-1/3 bg-orange-50 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-orange-100 flex flex-col justify-center font-bold">
-              <span className="text-melon-orange font-black text-[9px] tracking-[0.2em] uppercase mb-2 block">Category 02</span>
-              <h2 className="text-2xl md:text-4xl font-['Outfit'] font-black uppercase mb-4 text-slate-800 tracking-tight leading-none">Square Metal Magnets</h2>
+            <div className="md:w-1/3 bg-orange-50 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-orange-100 flex flex-col justify-center">
+              <span className="text-melon-orange font-black text-[9px] tracking-[0.2em] uppercase mb-2 block font-bold">Category 02</span>
+              <h2 className="text-2xl md:text-4xl font-['Outfit'] font-black uppercase mb-4 text-slate-800 tracking-tight leading-none font-bold">Square Metal Magnets</h2>
               <p className="text-slate-600 text-xs md:text-sm leading-relaxed mb-6 italic font-medium">Thick, glossy, sturdy finish. Perfect for photo gifts.</p>
               <ul className="grid grid-cols-2 md:grid-cols-1 gap-2">
                 {['Photo gifts', 'Baby photos', 'Couples', 'Gifting'].map(item => (
@@ -201,12 +196,11 @@ export default function App() {
           </div>
         </section>
 
-        {/* --- ABOUT US --- */}
         <section ref={aboutRef} className="max-w-5xl mx-auto px-4 mb-20 scroll-mt-24">
           <div className="bg-slate-900 rounded-[2rem] md:rounded-[3rem] p-8 md:p-16 text-white shadow-2xl relative overflow-hidden">
-            <div className="relative z-10 grid md:grid-cols-2 gap-10 text-left font-bold">
+            <div className="relative z-10 grid md:grid-cols-2 gap-10 text-left">
               <div>
-                <h2 className="text-xl md:text-2xl font-['Outfit'] font-black uppercase mb-4 flex items-center gap-2 text-melon-orange tracking-widest leading-none">
+                <h2 className="text-xl md:text-2xl font-['Outfit'] font-black uppercase mb-4 flex items-center gap-2 text-melon-orange tracking-widest leading-none font-bold underline decoration-melon-orange decoration-2">
                   <Sparkles size={20} /> About Us ✨
                 </h2>
                 <div className="text-slate-300 text-xs md:text-sm leading-relaxed font-medium space-y-4">
@@ -216,11 +210,11 @@ export default function App() {
                 </div>
               </div>
               <div className="flex flex-col justify-center space-y-6 md:border-l md:border-white/10 md:pl-12 pt-6 md:pt-0">
-                <a href="mailto:hello@melonmagnets.com" className="flex items-center gap-4 text-[10px] font-bold text-white uppercase tracking-widest truncate hover:text-melon-orange transition-colors outline-none">
+                <a href="mailto:hello@melonmagnets.com" className="flex items-center gap-4 text-[10px] font-bold text-white uppercase tracking-widest truncate hover:text-melon-orange transition-colors outline-none font-medium">
                   <div className="bg-white/10 p-2 rounded-lg"><Mail size={16} className="text-melon-orange" /></div>
                   hello@melonmagnets.com
                 </a>
-                <div className="flex items-start gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-loose text-left">
+                <div className="flex items-start gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-loose text-left font-medium">
                   <div className="bg-white/10 p-2 rounded-lg shrink-0"><MapPin size={16} className="text-melon-orange" /></div>
                   Vizbook, Yashwantpur, Bengaluru, 560022 📍
                 </div>
@@ -229,7 +223,6 @@ export default function App() {
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="pb-12 text-center px-6">
           <div className="flex justify-center gap-6 mb-8 items-center">
             <a href={instaLink} target="_blank" rel="noopener noreferrer" className="p-3 rounded-full bg-slate-50 hover:bg-melon-orange hover:text-white transition-all shadow-sm outline-none">
@@ -243,7 +236,6 @@ export default function App() {
         </footer>
       </div>
 
-      {/* --- BULK QUOTE MODAL --- */}
       <AnimatePresence>
         {isQuoteModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -251,26 +243,30 @@ export default function App() {
             <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl overflow-hidden">
               <div className="p-8">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-['Outfit'] font-black uppercase tracking-tight text-slate-800">Bulk Inquiry</h3>
+                  <h3 className="text-2xl font-['Outfit'] font-black uppercase tracking-tight text-slate-800 font-bold underline decoration-melon-orange decoration-4">Bulk Inquiry</h3>
                   <button onClick={() => setIsQuoteModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors"><X size={20} /></button>
                 </div>
                 <form onSubmit={handleBulkSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Estimated Quantity</label>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 font-bold">Estimated Quantity</label>
                     <input required type="number" placeholder="e.g. 150" value={quoteDetails.qty} onChange={(e) => setQuoteDetails({ ...quoteDetails, qty: e.target.value })} className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-melon-orange transition-all outline-none" />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Delivery Location</label>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 font-bold">Size Preference</label>
+                    <input required type="text" placeholder="e.g. 2x2 inch or Custom Shape" value={quoteDetails.size} onChange={(e) => setQuoteDetails({ ...quoteDetails, size: e.target.value })} className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-melon-orange transition-all outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 font-bold">Delivery Location</label>
                     <input required type="text" placeholder="City, State" value={quoteDetails.location} onChange={(e) => setQuoteDetails({ ...quoteDetails, location: e.target.value })} className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-melon-orange transition-all outline-none" />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Required By</label>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 font-bold">Required By</label>
                     <div className="relative">
                       <input required type="date" value={quoteDetails.date} onChange={(e) => setQuoteDetails({ ...quoteDetails, date: e.target.value })} className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-melon-orange transition-all outline-none appearance-none" />
                       <Calendar className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={18} />
                     </div>
                   </div>
-                  <button type="submit" className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-green-600 transition-all shadow-lg active:scale-95 mt-4">
+                  <button type="submit" className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-green-600 transition-all shadow-lg active:scale-95 mt-4 font-bold">
                     <WhatsAppLogo size={18} /> Send to WhatsApp
                   </button>
                 </form>
