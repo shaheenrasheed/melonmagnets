@@ -2,7 +2,7 @@ import os
 import subprocess
 
 def create_site():
-    project_name = "melonmagnets-web"
+    project_name = "melonmagnets"
     
     print(f"🚀 Creating {project_name}...")
 
