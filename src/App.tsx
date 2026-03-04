@@ -11,7 +11,7 @@ const RubberMagnets = [
   { id: 2, name: 'Compact Rectangle', sizeIn: '1.97" × 2.95"', sizeCm: '5 × 7.5 cm', price: '₹30', media: '/videos/product2.mp4', fallback: '/images/product2.jpg' },
   { id: 3, name: 'Large Square', sizeIn: '2.75" × 2.75"', sizeCm: '6.99 × 6.99 cm', price: '₹30', media: '/videos/product4.mp4', fallback: '/images/product4.jpg' },
   { id: 4, name: 'Landscape Wide', sizeIn: '4" × 3"', sizeCm: '10.16 × 7.62 cm', price: '₹52', media: '/videos/product5.mp4', fallback: '/images/product5.jpg' },
-  { id: 5, name: 'Sleek Rectangle', sizeIn: '1.97" × 3.15"', sizeCm: '5 × 8 cm', price: '₹55', media: '/videos/product6.mp4', fallback: '/images/product6.jpg' },
+  { id: 5, name: 'Sleek Rectangle', sizeIn: '1.97" × 3.15"', sizeCm: '5 × 8 cm', price: '₹60', media: '/videos/product6.mp4', fallback: '/images/product6.jpg' },
 ];
 
 const PremiumMagnets = [
@@ -71,7 +71,6 @@ export default function App() {
   const instaLink = "https://www.instagram.com/melonmagnets/";
   const aboutRef = useRef<HTMLElement>(null);
   
-  // Modal State
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [quoteDetails, setQuoteDetails] = useState({ qty: '', location: '', date: '', size: '' });
 
@@ -80,13 +79,13 @@ export default function App() {
   }, []);
 
   const handleProductInquiry = useCallback((product: any) => {
-    const message = `Hi Melon Magnets \n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details. Thank you!`;
+    const message = `Hi Melon Magnets 👋\n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details. Thank you!`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   }, [whatsappNumber]);
 
   const handleBulkSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const message = `Hi Melon Magnets \n\nI'm interested in placing a bulk order.\n\nEstimated Quantity: ${quoteDetails.qty}\nSize Preference: ${quoteDetails.size}\nDelivery Location: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline details.`;
+    const message = `Hi Melon Magnets 👋\n\nI'm interested in placing a bulk order.\n\nEstimated Quantity: ${quoteDetails.qty}\nSize Preference: ${quoteDetails.size}\nDelivery Location: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline details.`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
     setIsQuoteModalOpen(false);
   };
@@ -104,20 +103,20 @@ export default function App() {
       </div>
 
       <div className="relative z-10">
-        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg px-4 md:px-6 py-4 border-b border-slate-50">
-          <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg px-3 md:px-6 py-4 border-b border-slate-50">
+          <div className="max-w-6xl mx-auto flex justify-between items-center gap-2">
             <button 
               onClick={scrollToAbout} 
-              className="flex items-center gap-3 cursor-pointer group outline-none border-none bg-transparent"
+              className="flex items-center gap-2 md:gap-3 cursor-pointer group outline-none border-none bg-transparent min-w-0"
             >
-              <img src="/logo.png" alt="MelonMagnets Logo" className="h-10 md:h-16 w-auto transition-transform group-hover:scale-105" />
-              <span className="text-xl md:text-3xl font-['Archivo_Black'] font-black tracking-tighter text-melon-green uppercase">Melon<span className="text-melon-orange">Magnets</span></span>
+              <img src="/logo.png" alt="MelonMagnets Logo" className="h-9 md:h-16 w-auto transition-transform group-hover:scale-105 shrink-0" />
+              <span className="text-lg md:text-3xl font-['Inter'] font-medium tracking-tight text-melon-green uppercase truncate">Melon<span className="text-melon-orange">Magnets</span></span>
             </button>
             <button 
               onClick={() => setIsQuoteModalOpen(true)} 
-              className="bg-[#25D366] text-white px-5 py-2.5 rounded-full text-[9px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-green-600 transition-all shadow-md flex items-center gap-2 active:scale-95 outline-none font-bold"
+              className="bg-[#25D366] text-white px-3 md:px-5 py-2.5 rounded-full text-[8px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-green-600 transition-all shadow-md flex items-center gap-1.5 active:scale-95 outline-none shrink-0"
             >
-              <WhatsAppLogo size={16} /> Get Quote
+              <WhatsAppLogo size={14} /> Get Quote
             </button>
           </div>
         </nav>
@@ -131,6 +130,7 @@ export default function App() {
           </div>
         </header>
 
+        {/* --- CATEGORY 01 --- */}
         <section className="max-w-6xl mx-auto px-4 md:px-6 mb-20">
           <SectionHeader id="01" title="Flexible Rubber Magnets" description="Thin, lightweight, bendable. Ideal for travel souvenirs and bulk gifting." tags={['Travel', 'Souvenirs', 'Bulk', 'Corporate']} />
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
@@ -138,7 +138,7 @@ export default function App() {
               <article key={m.id} className="group border border-slate-100 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-500">
                 <MediaCard videoSrc={m.media} imageSrc={m.fallback} name={m.name} />
                 <div className="p-4 md:p-8">
-                  <h3 className="font-extrabold text-xs md:text-xl truncate mb-0.5 uppercase tracking-tighter leading-tight whitespace-normal">{m.name}</h3>
+                  <h3 className="font-medium text-xs md:text-xl truncate mb-0.5 uppercase tracking-normal leading-tight whitespace-normal">{m.name}</h3>
                   <p className="text-slate-400 text-[8px] md:text-[10px] font-bold tracking-widest mb-4 opacity-70 italic">{m.sizeIn} | {m.sizeCm}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-lg md:text-3xl font-black text-melon-green">{m.price}</span>
@@ -156,7 +156,7 @@ export default function App() {
                  <div className="mt-3 px-3 py-1 bg-slate-800 text-white text-[8px] md:text-[10px] font-black uppercase rounded-full tracking-widest shadow-sm">Min: 150 Units</div>
               </div>
               <div className="p-4 md:p-8 flex flex-col flex-1 justify-center">
-                <button onClick={() => setIsQuoteModalOpen(true)} className="w-full border-2 border-[#25D366] text-[#25D366] py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-[9px] md:text-xs uppercase tracking-widest hover:bg-[#25D366] hover:text-white transition-all flex items-center justify-center gap-2 active:scale-95 outline-none">
+                <button onClick={() => setIsQuoteModalOpen(true)} className="w-full border-2 border-[#25D366] text-[#25D366] py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-[9px] md:text-xs uppercase tracking-widest hover:bg-[#25D366] hover:text-white transition-all flex items-center justify-center gap-2 active:scale-95 outline-none font-bold">
                   <WhatsAppLogo size={16} /> Request Quote
                 </button>
               </div>
@@ -164,6 +164,7 @@ export default function App() {
           </div>
         </section>
 
+        {/* --- CATEGORY 02 --- */}
         <section className="max-w-6xl mx-auto px-4 md:px-6 mb-24">
           <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-stretch mb-10">
             <div className="md:w-1/3 bg-orange-50 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-orange-100 flex flex-col justify-center">
@@ -181,7 +182,7 @@ export default function App() {
                 <article key={m.id} className="group border border-slate-100 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all">
                   <MediaCard videoSrc={m.media} imageSrc={m.fallback} name={m.name} />
                   <div className="p-4 md:p-8">
-                    <h3 className="font-extrabold text-xs md:text-2xl mb-1 uppercase tracking-tighter whitespace-normal leading-tight">{m.name}</h3>
+                    <h3 className="font-medium text-xs md:text-2xl mb-1 uppercase tracking-normal whitespace-normal leading-tight">{m.name}</h3>
                     <p className="text-slate-400 text-[8px] md:text-[10px] font-bold tracking-widest mb-4 opacity-70 italic">{m.sizeIn} | {m.sizeCm}</p>
                     <div className="flex justify-between items-center">
                       <span className="text-lg md:text-3xl font-black text-melon-green">{m.price}</span>
@@ -196,9 +197,10 @@ export default function App() {
           </div>
         </section>
 
+        {/* --- ABOUT US --- */}
         <section ref={aboutRef} className="max-w-5xl mx-auto px-4 mb-20 scroll-mt-24">
           <div className="bg-slate-900 rounded-[2rem] md:rounded-[3rem] p-8 md:p-16 text-white shadow-2xl relative overflow-hidden">
-            <div className="relative z-10 grid md:grid-cols-2 gap-10 text-left">
+            <div className="relative z-10 grid md:grid-cols-2 gap-10 text-left font-bold">
               <div>
                 <h2 className="text-xl md:text-2xl font-['Outfit'] font-black uppercase mb-4 flex items-center gap-2 text-melon-orange tracking-widest leading-none font-bold underline decoration-melon-orange decoration-2">
                   <Sparkles size={20} /> About Us ✨
@@ -210,11 +212,11 @@ export default function App() {
                 </div>
               </div>
               <div className="flex flex-col justify-center space-y-6 md:border-l md:border-white/10 md:pl-12 pt-6 md:pt-0">
-                <a href="mailto:hello@melonmagnets.com" className="flex items-center gap-4 text-[10px] font-bold text-white uppercase tracking-widest truncate hover:text-melon-orange transition-colors outline-none font-medium">
+                <a href="mailto:hello@melonmagnets.com" className="flex items-center gap-4 text-[10px] font-normal text-white uppercase tracking-widest truncate hover:text-melon-orange transition-colors outline-none">
                   <div className="bg-white/10 p-2 rounded-lg"><Mail size={16} className="text-melon-orange" /></div>
                   hello@melonmagnets.com
                 </a>
-                <div className="flex items-start gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-loose text-left font-medium">
+                <div className="flex items-start gap-4 text-[10px] font-normal text-slate-400 uppercase tracking-widest leading-loose text-left">
                   <div className="bg-white/10 p-2 rounded-lg shrink-0"><MapPin size={16} className="text-melon-orange" /></div>
                   Vizbook, Yashwantpur, Bengaluru, 560022 📍
                 </div>
