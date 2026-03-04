@@ -122,7 +122,7 @@ export default function App() {
         </nav>
 
         <header className="pt-16 pb-12 px-6 text-center">
-          <motion.h1 initial="hidden" animate="visible" variants={heroVariants} className="text-5xl md:text-9xl font-['Outfit'] font-black uppercase italic leading-[0.85] mb-6 tracking-tighter text-slate-800">
+          <motion.h1 initial="hidden" animate="visible" variants={heroVariants} className="text-5xl md:text-9xl font-['Outfit'] font-bold uppercase italic leading-[0.85] mb-6 tracking-tighter text-slate-800">
             Sticky <br/><span className="text-melon-orange">Souvenirs.</span>
           </motion.h1>
           <div className="flex justify-center items-center gap-3 text-slate-400 text-[9px] font-bold tracking-[0.2em] uppercase">
