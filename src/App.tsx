@@ -1,11 +1,7 @@
 import { useState, useRef, useCallback, memo } from 'react';
-import { 
-  Instagram, Mail, MapPin, Sparkles, Globe, 
-  CheckCircle2, Ruler, X, Calendar
-} from 'lucide-react';
+import { Mail, MapPin, Globe, Ruler, X, Calendar, ArrowRight, CheckCircle, InstagramIcon } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
-/** * DATA STRUCTURES  */
 const RubberMagnets = [
   { id: 1, name: 'Standard Portrait', sizeIn: '2.17" × 3.39"', sizeCm: '5.5 × 8.6 cm', price: '₹50', media: '/videos/product1.mp4', fallback: '/images/product1.jpg' },
   { id: 2, name: 'Compact Rectangle', sizeIn: '1.97" × 2.95"', sizeCm: '5 × 7.5 cm', price: '₹30', media: '/videos/product2.mp4', fallback: '/images/product2.jpg' },
@@ -18,32 +14,33 @@ const PremiumMagnets = [
   { id: 6, name: 'Square Photo Magnet', sizeIn: '2" × 2"', sizeCm: '5.08 × 5.08 cm', price: '₹70', media: '/videos/product3.mp4', fallback: '/images/product3.jpg' },
 ];
 
-/** * REUSABLE COMPONENTS */
+const CLIENTS = [
+  { src: '/clients/Zolo Stays.png', name: 'Zolo Stays' },
+  { src: '/clients/NCN Srivari.png', name: 'NCN Srivari' },
+  { src: '/clients/TA.png', name: 'TA' },
+  { src: '/clients/Sumadhura-Circle-logo.jpg', name: 'Sumadhura' },
+  { src: '/clients/Eternal happiness convention logo 2026.png', name: 'Eternal Happiness Convention' },
+];
+
 const WhatsAppLogo = memo(({ size = 24 }: { size?: number }) => (
-  <img 
-    src="/whatsapp-logo.png" 
-    alt="WhatsApp" 
-    style={{ width: size, height: size }} 
-    className="object-contain inline-block" 
-  />
+  <img src="/whatsapp-logo.png" alt="WhatsApp" style={{ width: size, height: size }} className="object-contain inline-block" />
 ));
 
-const MediaCard = memo(({ videoSrc, imageSrc, name }: { videoSrc: string; imageSrc: string, name: string }) => {
+const MediaCard = memo(({ videoSrc, imageSrc, name }: { videoSrc: string; imageSrc: string; name: string }) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
   return (
     <div className="relative aspect-square bg-slate-100 overflow-hidden">
-      <img 
-        src={imageSrc} 
+      <img
+        src={imageSrc}
         alt={`${name} preview`}
         loading="lazy"
         className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-500 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}
-        onError={(e) => { (e.target as HTMLImageElement).src = "https://placehold.co/600x600?text=Melon+Magnets"; }}
+        onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/600x600?text=Melon+Magnets'; }}
       />
-      <video 
-        autoPlay muted loop playsInline 
-        preload="metadata"
+      <video
+        autoPlay muted loop playsInline preload="metadata"
         onPlay={() => setVideoLoaded(true)}
-        className={`relative z-10 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`relative z-10 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
       >
         <source src={videoSrc} type="video/mp4" />
       </video>
@@ -51,255 +48,424 @@ const MediaCard = memo(({ videoSrc, imageSrc, name }: { videoSrc: string; imageS
   );
 });
 
-const SectionHeader = ({ id, title, description, tags }: { id: string, title: string, description: string, tags?: string[] }) => (
-  <div className="bg-orange-50 p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] mb-6 md:mb-10 border border-orange-100">
-    <span className="text-melon-orange font-black text-[9px] tracking-[0.2em] uppercase mb-2 block font-bold">Category {id}</span>
-    <h2 className="text-2xl md:text-4xl font-['Outfit'] font-black uppercase mb-3 text-slate-800 tracking-tight leading-none font-bold">{title}</h2>
-    <p className="text-slate-600 text-xs md:text-sm leading-relaxed mb-6 italic">{description}</p>
-    {tags && (
-      <div className="flex flex-wrap gap-2">
-        {tags.map(tag => (
-          <span key={tag} className="text-[8px] font-black bg-white border border-orange-200 px-2.5 py-1 rounded-full uppercase tracking-widest text-melon-orange shadow-sm">{tag}</span>
-        ))}
-      </div>
-    )}
-  </div>
-);
-
 export default function App() {
-  const whatsappNumber = "919787337194";
-  const instaLink = "https://www.instagram.com/melonmagnets/";
+  const whatsappNumber = '919787337194';
+  const instaLink = 'https://www.instagram.com/melonmagnets/';
+  const productsRef = useRef<HTMLElement>(null);
   const aboutRef = useRef<HTMLElement>(null);
-  
+
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [quoteDetails, setQuoteDetails] = useState({ qty: '', location: '', date: '', size: '' });
 
-  const scrollToAbout = useCallback(() => {
-    aboutRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
-  /** * GA4 EVENT TRACKING
-   * Tracks the WhatsApp click as a custom event.
-   */
   const trackConversion = (label: string) => {
     if (typeof window.gtag !== 'undefined') {
-      window.gtag('event', 'whatsapp_conversion', {
-        'event_category': 'Conversion',
-        'event_label': label,
-        'value': 1.0 // Optional: assign a weight to this action
-      });
+      window.gtag('event', 'whatsapp_conversion', { event_category: 'Conversion', event_label: label, value: 1.0 });
     }
   };
 
   const handleProductInquiry = useCallback((product: any) => {
     trackConversion(`Inquiry: ${product.name}`);
-    const message = `Hi Melon Magnets 👋\n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details. Thank you!`;
+    const message = `Hi Melon Magnets!\n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details.`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   }, [whatsappNumber]);
 
   const handleBulkSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     trackConversion('Bulk Quote Success');
-    const message = `Hi Melon Magnets 👋\n\nI'm interested in placing a bulk order.\n\nEstimated Quantity: ${quoteDetails.qty}\nSize Preference: ${quoteDetails.size}\nDelivery Location: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline details.`;
+    const message = `Hi Melon Magnets!\n\nI'd like to place a bulk order.\n\nQuantity: ${quoteDetails.qty}\nSize: ${quoteDetails.size}\nLocation: ${quoteDetails.location}\nRequired By: ${quoteDetails.date}\n\nPlease share pricing and timeline.`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
     setIsQuoteModalOpen(false);
   };
 
-  const heroVariants: Variants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.8 } }
+  const fadeUp: Variants = {
+    hidden: { y: 24, opacity: 0 },
+    visible: (i = 0) => ({ y: 0, opacity: 1, transition: { duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] } }),
   };
 
   return (
-    <div className="min-h-screen bg-white font-['Plus_Jakarta_Sans'] text-slate-900 relative overflow-x-hidden">
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute top-[5%] left-[-10%] w-72 h-72 bg-melon-orange/5 rounded-full blur-[100px] animate-float" />
-        <div className="absolute bottom-[10%] right-[-10%] w-80 h-80 bg-melon-green/5 rounded-full blur-[100px] animate-float-delayed" />
-      </div>
+    <div className="min-h-screen bg-white text-slate-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
-      <div className="relative z-10">
-        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg px-3 md:px-6 py-4 border-b border-slate-50">
-          <div className="max-w-6xl mx-auto flex justify-between items-center gap-2">
-            <button 
-              onClick={scrollToAbout} 
-              className="flex items-center gap-2 md:gap-3 cursor-pointer group outline-none border-none bg-transparent min-w-0"
-            >
-              <img src="/logo.png" alt="MelonMagnets Logo" className="h-9 md:h-16 w-auto transition-transform group-hover:scale-105 shrink-0" />
-              <span className="text-lg md:text-3xl font-['Inter'] font-medium tracking-tight text-melon-green uppercase truncate">Melon<span className="text-melon-orange">Magnets</span></span>
-            </button>
-            <button 
-              onClick={() => {
-                trackConversion('Navbar Quote Click');
-                setIsQuoteModalOpen(true);
-              }} 
-              className="bg-[#25D366] text-white px-3 md:px-5 py-2.5 rounded-full text-[8px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-green-600 transition-all shadow-md flex items-center gap-1.5 active:scale-95 outline-none shrink-0 font-bold"
-            >
-              <WhatsAppLogo size={14} /> Get Quote
-            </button>
+      {/* ── NAV ── */}
+      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          <button
+            onClick={() => aboutRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            className="flex items-center gap-2.5 outline-none bg-transparent border-none cursor-pointer group"
+          >
+            <img src="/logo.png" alt="MelonMagnets" className="h-9 md:h-14 w-auto group-hover:scale-105 transition-transform" />
+            <span style={{ fontFamily: "'Inter', sans-serif" }} className="text-base font-bold tracking-tight text-slate-800">
+              Melon<span className="text-melon-orange">Magnets</span>
+            </span>
+          </button>
+
+          <div className="hidden md:flex items-center gap-8">
+            <button onClick={() => productsRef.current?.scrollIntoView({ behavior: 'smooth' })} className="text-sm text-slate-500 hover:text-slate-900 transition-colors bg-transparent border-none cursor-pointer outline-none">Products</button>
+            <button onClick={() => aboutRef.current?.scrollIntoView({ behavior: 'smooth' })} className="text-sm text-slate-500 hover:text-slate-900 transition-colors bg-transparent border-none cursor-pointer outline-none">About</button>
+            <a href="mailto:hello@melonmagnets.com" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Contact</a>
           </div>
-        </nav>
 
-        <header className="pt-16 pb-12 px-6 text-center">
-          <motion.h1 initial="hidden" animate="visible" variants={heroVariants} className="text-5xl md:text-9xl font-['Outfit'] font-bold uppercase italic leading-[0.85] mb-6 tracking-tighter text-slate-800">
-            Sticky <br/><span className="text-melon-orange">Souvenirs.</span>
+          <button
+            onClick={() => { trackConversion('Navbar Quote Click'); setIsQuoteModalOpen(true); }}
+            className="flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-600 transition-colors shadow-sm outline-none"
+            style={{ fontFamily: "'Inter', sans-serif" }}
+          >
+            <WhatsAppLogo size={16} /> Get Quote
+          </button>
+        </div>
+      </nav>
+
+      {/* ── HERO ── */}
+      <header className="max-w-6xl mx-auto px-4 md:px-8 pt-20 pb-16 md:pt-28 md:pb-24">
+        <motion.div initial="hidden" animate="visible" className="max-w-4xl">
+          <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 text-melon-orange px-3.5 py-1.5 rounded-full text-xs font-semibold mb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-melon-orange animate-pulse inline-block" />
+            Bengaluru's Premium Magnet Studio
+          </motion.div>
+
+          <motion.h1
+            variants={fadeUp}
+            custom={1}
+            className="text-4xl md:text-7xl font-black leading-[1.05] tracking-tight text-slate-900 mb-6"
+            style={{ fontFamily: "'Inter', sans-serif" }}
+          >
+            Turn moments into<br />
+            <span className="text-melon-orange">magnetic memories.</span>
           </motion.h1>
-          <div className="flex justify-center items-center gap-3 text-slate-400 text-[9px] font-bold tracking-[0.2em] uppercase">
-            <span>Bengaluru</span> <Globe size={10} /> <span>Pan-India Delivery</span>
-          </div>
-        </header>
 
-        {/* --- CATEGORY 01 --- */}
-        <section className="max-w-6xl mx-auto px-4 md:px-6 mb-20">
-          <SectionHeader id="01" title="Flexible Rubber Magnets" description="Thin, lightweight, bendable. Ideal for travel souvenirs and bulk gifting." tags={['Travel', 'Souvenirs', 'Bulk', 'Corporate']} />
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
-            {RubberMagnets.map(m => (
-              <article key={m.id} className="group border border-slate-100 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-500">
+          <motion.p variants={fadeUp} custom={2} className="text-base md:text-xl text-slate-500 leading-relaxed mb-10 max-w-2xl font-normal">
+            Custom fridge magnets and souvenirs for corporate events, weddings, and bulk gifting — designed with care, delivered pan-India.
+          </motion.p>
+
+          <motion.div variants={fadeUp} custom={3} className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => { trackConversion('Hero Quote Click'); setIsQuoteModalOpen(true); }}
+              className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:bg-slate-700 transition-colors outline-none"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              Get a Quote <ArrowRight size={16} />
+            </button>
+            <button
+              onClick={() => productsRef.current?.scrollIntoView({ behavior: 'smooth' })}
+              className="flex items-center gap-2 border border-slate-200 text-slate-700 px-6 py-3 rounded-lg text-sm font-semibold hover:border-slate-400 transition-colors bg-transparent outline-none cursor-pointer"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              Browse Products
+            </button>
+          </motion.div>
+        </motion.div>
+
+        {/* Stats strip */}
+        <motion.div
+          variants={fadeUp} custom={4}
+          initial="hidden" animate="visible"
+          className="flex flex-wrap items-center gap-x-10 gap-y-4 mt-16 pt-10 border-t border-slate-100"
+        >
+          {[
+            { value: '6,000+', label: 'Magnets sold' },
+            { value: '100+', label: 'Minimum bulk units' },
+            { value: 'Worldwide', label: 'Shipping coverage' },
+            { value: '2 types', label: 'Rubber & metal magnets' },
+          ].map(stat => (
+            <div key={stat.label}>
+              <div className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Inter', sans-serif" }}>{stat.value}</div>
+              <div className="text-xs text-slate-400 mt-0.5">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
+      </header>
+
+      {/* ── CLIENTS ── */}
+      <section className="border-y border-slate-100 bg-white py-12">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 mb-8 text-center">
+          <p className="text-xs font-semibold tracking-widest uppercase text-slate-400" style={{ fontFamily: "'Inter', sans-serif" }}>
+            Trusted by leading brands
+          </p>
+        </div>
+        <div className="relative overflow-hidden">
+          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-24 md:w-40 bg-gradient-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24 md:w-40 bg-gradient-to-l from-white to-transparent" />
+          <div className="flex w-max animate-marquee gap-16 md:gap-24 items-center px-12">
+            {[...CLIENTS, ...CLIENTS].map((client, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.08, y: -3 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="flex items-center justify-center h-12 md:h-16 shrink-0 cursor-pointer"
+                title={client.name}
+              >
+                <img
+                  src={client.src}
+                  alt={client.name}
+                  className="max-h-full max-w-[110px] md:max-w-[150px] w-auto object-contain transition-all duration-300"
+                  loading="lazy"
+                />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRODUCTS ── */}
+      <main ref={productsRef} className="max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-28">
+
+        {/* Category 01 */}
+        <section className="mb-24">
+          <div className="mb-10">
+            <p className="text-xs font-semibold tracking-widest uppercase text-melon-orange mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>Category 01</p>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Flexible Rubber Magnets
+            </h2>
+            <p className="text-slate-500 text-base max-w-xl">Thin, lightweight, and bendable. The go-to choice for travel souvenirs, events, and bulk corporate gifting.</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {RubberMagnets.map((m, idx) => (
+              <motion.article
+                key={m.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.07 }}
+                className="group border border-slate-200 rounded-xl overflow-hidden bg-white hover:border-slate-300 hover:shadow-lg transition-all duration-300"
+              >
                 <MediaCard videoSrc={m.media} imageSrc={m.fallback} name={m.name} />
-                <div className="p-4 md:p-8">
-                  <h3 className="font-medium text-xs md:text-xl truncate mb-0.5 uppercase tracking-normal leading-tight whitespace-normal">{m.name}</h3>
-                  <p className="text-slate-400 text-[8px] md:text-[10px] font-bold tracking-widest mb-4 opacity-70 italic">{m.sizeIn} | {m.sizeCm}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg md:text-3xl font-black text-melon-green">{m.price}</span>
-                    <button onClick={() => handleProductInquiry(m)} className="p-1 hover:scale-110 transition-transform active:scale-95 outline-none bg-transparent border-none">
-                      <WhatsAppLogo size={32} />
+                <div className="p-4 md:p-6">
+                  <h3 className="font-semibold text-sm md:text-base text-slate-900 mb-1 leading-snug" style={{ fontFamily: "'Inter', sans-serif" }}>{m.name}</h3>
+                  <p className="text-slate-400 text-xs mb-4">{m.sizeIn} · {m.sizeCm}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl md:text-2xl font-bold text-slate-900" style={{ fontFamily: "'Inter', sans-serif" }}>{m.price}</span>
+                    <button onClick={() => handleProductInquiry(m)} className="p-1 hover:scale-110 transition-transform outline-none bg-transparent border-none cursor-pointer">
+                      <WhatsAppLogo size={30} />
                     </button>
                   </div>
                 </div>
-              </article>
+              </motion.article>
             ))}
-            <div className="group border-2 border-dashed border-slate-200 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden bg-slate-50/50 flex flex-col hover:bg-slate-100 transition-all duration-500 relative">
-              <div className="aspect-square flex flex-col items-center justify-center p-4 text-center border-b border-dashed border-slate-200">
-                 <Ruler size={24} className="text-slate-400 mb-3" />
-                 <h3 className="font-['Outfit'] font-black text-sm md:text-2xl uppercase tracking-tighter leading-tight">Custom Size <br/>Bulk Orders</h3>
-                 <div className="mt-3 px-3 py-1 bg-slate-800 text-white text-[8px] md:text-[10px] font-black uppercase rounded-full tracking-widest shadow-sm">Min: 150 Units</div>
+
+            {/* Custom bulk card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: RubberMagnets.length * 0.07 }}
+              className="border border-dashed border-slate-200 rounded-xl overflow-hidden bg-slate-50 flex flex-col hover:bg-slate-100/70 transition-all duration-300"
+            >
+              <div className="aspect-square flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center mb-4">
+                  <Ruler size={18} className="text-slate-500" />
+                </div>
+                <h3 className="font-bold text-sm md:text-lg text-slate-800 leading-snug mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>Custom Size<br />Bulk Orders</h3>
+                <span className="text-xs bg-slate-800 text-white px-3 py-1 rounded-full font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Min 100 units</span>
               </div>
-              <div className="p-4 md:p-8 flex flex-col flex-1 justify-center">
-                <button 
-                  onClick={() => {
-                    trackConversion('Grid Request Quote Click');
-                    setIsQuoteModalOpen(true);
-                  }} 
-                  className="w-full border-2 border-[#25D366] text-[#25D366] py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-[9px] md:text-xs uppercase tracking-widest hover:bg-[#25D366] hover:text-white transition-all flex items-center justify-center gap-2 active:scale-95 outline-none font-bold"
+              <div className="p-4 md:p-6 border-t border-dashed border-slate-200">
+                <button
+                  onClick={() => { trackConversion('Grid Request Quote Click'); setIsQuoteModalOpen(true); }}
+                  className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-green-600 transition-colors outline-none cursor-pointer"
+                  style={{ fontFamily: "'Inter', sans-serif" }}
                 >
                   <WhatsAppLogo size={16} /> Request Quote
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
-        {/* --- CATEGORY 02 --- */}
-        <section className="max-w-6xl mx-auto px-4 md:px-6 mb-24">
-          <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-stretch mb-10">
-            <div className="md:w-1/3 bg-orange-50 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-orange-100 flex flex-col justify-center">
-              <span className="text-melon-orange font-black text-[9px] tracking-[0.2em] uppercase mb-2 block font-bold">Category 02</span>
-              <h2 className="text-2xl md:text-4xl font-['Outfit'] font-black uppercase mb-4 text-slate-800 tracking-tight leading-none font-bold">Square Metal Magnets</h2>
-              <p className="text-slate-600 text-xs md:text-sm leading-relaxed mb-6 italic font-medium">Thick, glossy, sturdy finish. Perfect for photo gifts.</p>
-              <ul className="grid grid-cols-2 md:grid-cols-1 gap-2">
-                {['Photo gifts', 'Baby photos', 'Couples', 'Gifting'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-[9px] font-bold text-slate-700 uppercase tracking-tight"><CheckCircle2 size={12} className="text-melon-orange" /> {item}</li>
+        {/* Category 02 */}
+        <section>
+          <div className="mb-10">
+            <p className="text-xs font-semibold tracking-widest uppercase text-melon-orange mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>Category 02</p>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Square Metal Magnets
+            </h2>
+            <p className="text-slate-500 text-base max-w-xl">Thick, glossy, and premium-feel. Ideal for photo gifts, couples, baby milestones, and special occasions.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8 items-start">
+            {/* Feature list */}
+            <div className="border border-slate-100 rounded-xl p-6 md:p-8 bg-slate-50">
+              <p className="text-sm font-semibold text-slate-700 mb-5" style={{ fontFamily: "'Inter', sans-serif" }}>Perfect for</p>
+              <ul className="space-y-3">
+                {['Photo gifts', 'Baby photos', 'Couples & weddings', 'Corporate gifting'].map(item => (
+                  <li key={item} className="flex items-center gap-3 text-sm text-slate-600">
+                    <CheckCircle size={15} className="text-melon-orange shrink-0" />
+                    {item}
+                  </li>
                 ))}
               </ul>
             </div>
-            <div className="md:w-2/3 grid grid-cols-2 gap-3 md:gap-6">
-              {PremiumMagnets.map(m => (
-                <article key={m.id} className="group border border-slate-100 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all">
+
+            {/* Product cards */}
+            <div className="md:col-span-2 grid grid-cols-2 gap-4 md:gap-6">
+              {PremiumMagnets.map((m, idx) => (
+                <motion.article
+                  key={m.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.07 }}
+                  className="group border border-slate-200 rounded-xl overflow-hidden bg-white hover:border-slate-300 hover:shadow-lg transition-all duration-300"
+                >
                   <MediaCard videoSrc={m.media} imageSrc={m.fallback} name={m.name} />
-                  <div className="p-4 md:p-8">
-                    <h3 className="font-medium text-xs md:text-2xl mb-1 uppercase tracking-normal whitespace-normal leading-tight">{m.name}</h3>
-                    <p className="text-slate-400 text-[8px] md:text-[10px] font-bold tracking-widest mb-4 opacity-70 italic">{m.sizeIn} | {m.sizeCm}</p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg md:text-3xl font-black text-melon-green">{m.price}</span>
-                      <button onClick={() => handleProductInquiry(m)} className="p-1 hover:scale-110 transition-transform active:scale-95 outline-none bg-transparent border-none">
-                        <WhatsAppLogo size={32} />
+                  <div className="p-4 md:p-6">
+                    <h3 className="font-semibold text-sm md:text-base text-slate-900 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>{m.name}</h3>
+                    <p className="text-slate-400 text-xs mb-4">{m.sizeIn} · {m.sizeCm}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl md:text-2xl font-bold text-slate-900" style={{ fontFamily: "'Inter', sans-serif" }}>{m.price}</span>
+                      <button onClick={() => handleProductInquiry(m)} className="p-1 hover:scale-110 transition-transform outline-none bg-transparent border-none cursor-pointer">
+                        <WhatsAppLogo size={30} />
                       </button>
                     </div>
                   </div>
-                </article>
+                </motion.article>
               ))}
             </div>
           </div>
         </section>
+      </main>
 
-        {/* --- ABOUT US --- */}
-        <section ref={aboutRef} className="max-w-5xl mx-auto px-4 mb-20 scroll-mt-24">
-          <div className="bg-slate-900 rounded-[2rem] md:rounded-[3rem] p-8 md:p-16 text-white shadow-2xl relative overflow-hidden">
-            <div className="relative z-10 grid md:grid-cols-2 gap-10 text-left font-bold">
-              <div>
-                <h2 className="text-xl md:text-2xl font-['Outfit'] font-black uppercase mb-4 flex items-center gap-2 text-melon-orange tracking-widest leading-none font-bold underline decoration-melon-orange decoration-2">
-                  <Sparkles size={20} /> About Us ✨
-                </h2>
-                <div className="text-slate-300 text-xs md:text-sm leading-relaxed font-medium space-y-4">
-                  <p>Melon Magnets started in Bengaluru with a simple idea, to turn special moments into beautiful keepsakes. 💡</p>
-                  <p>We create creative, high-quality fridge magnets and badges that are fun, affordable, and made with care. 🎨 From custom photo magnets to bulk event orders, we love bringing your ideas to life. 🚀</p>
-                  <p className="italic text-melon-orange font-bold">Every magnet tells a story, let’s create yours. 🍉</p>
+      {/* ── ABOUT ── */}
+      <section ref={aboutRef} className="bg-slate-950 scroll-mt-16">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-28">
+          <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+            <div>
+              <p className="text-xs font-semibold tracking-widest uppercase text-melon-orange mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>About Us</p>
+              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+                Making memories stick<br />since day one.
+              </h2>
+              <div className="space-y-4 text-slate-400 text-sm md:text-base leading-relaxed">
+                <p>Melon Magnets started in Bengaluru with one idea — turn special moments into beautiful keepsakes that last.</p>
+                <p>From custom photo magnets to large-scale event orders, we work with brands, event organizers, and individuals who care about quality and detail.</p>
+                <p className="text-melon-orange font-medium">Every magnet tells a story. Let's create yours.</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <a
+                href="mailto:hello@melonmagnets.com"
+                className="flex items-center gap-4 p-5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors group outline-none"
+              >
+                <div className="w-10 h-10 rounded-lg bg-melon-orange/10 flex items-center justify-center shrink-0">
+                  <Mail size={18} className="text-melon-orange" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>Email us</p>
+                  <p className="text-sm font-medium text-white group-hover:text-melon-orange transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>hello@melonmagnets.com</p>
+                </div>
+              </a>
+
+              <div className="flex items-center gap-4 p-5 rounded-xl border border-white/10 bg-white/5">
+                <div className="w-10 h-10 rounded-lg bg-melon-orange/10 flex items-center justify-center shrink-0">
+                  <MapPin size={18} className="text-melon-orange" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>Studio location</p>
+                  <p className="text-sm font-medium text-white" style={{ fontFamily: "'Inter', sans-serif" }}>Vizbook, Yashwantpur, Bengaluru 560022</p>
                 </div>
               </div>
-              <div className="flex flex-col justify-center space-y-6 md:border-l md:border-white/10 md:pl-12 pt-6 md:pt-0">
-                <a href="mailto:hello@melonmagnets.com" className="flex items-center gap-4 text-[10px] font-normal text-white uppercase tracking-widest truncate hover:text-melon-orange transition-colors outline-none">
-                  <div className="bg-white/10 p-2 rounded-lg shrink-0"><Mail size={16} className="text-melon-orange" /></div>
-                  hello@melonmagnets.com
-                </a>
-                <div className="flex items-start gap-4 text-[10px] font-normal text-slate-400 uppercase tracking-widest leading-loose text-left">
-                  <div className="bg-white/10 p-2 rounded-lg shrink-0"><MapPin size={16} className="text-melon-orange" /></div>
-                  Vizbook, Yashwantpur, Bengaluru, 560022 📍
+
+              <div className="flex items-center gap-4 p-5 rounded-xl border border-white/10 bg-white/5">
+                <div className="w-10 h-10 rounded-lg bg-melon-orange/10 flex items-center justify-center shrink-0">
+                  <Globe size={18} className="text-melon-orange" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>Delivery</p>
+                  <p className="text-sm font-medium text-white" style={{ fontFamily: "'Inter', sans-serif" }}>Pan-India shipping available</p>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <footer className="pb-12 text-center px-6">
-          <div className="flex justify-center gap-6 mb-8 items-center">
-            <a href={instaLink} target="_blank" rel="noopener noreferrer" className="p-3 rounded-full bg-slate-50 hover:bg-melon-orange hover:text-white transition-all shadow-sm outline-none">
-              <Instagram size={20} />
+      {/* ── FOOTER ── */}
+      <footer className="bg-slate-950 border-t border-white/5">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-2.5">
+            <img src="/logo.png" alt="MelonMagnets" className="h-7 w-auto" />
+            <span className="text-sm font-bold text-slate-400" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Melon<span className="text-melon-orange">Magnets</span>
+            </span>
+          </div>
+
+          <p className="text-xs text-slate-600 order-last md:order-none" style={{ fontFamily: "'Inter', sans-serif" }}>
+            © 2026 Melon Magnets. Made with care in Bengaluru.
+          </p>
+
+          <div className="flex items-center gap-4">
+            <a href={instaLink} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:border-white/20 transition-colors outline-none">
+              <InstagramIcon size={16} />
             </a>
-            <button 
-              onClick={() => {
-                trackConversion('Footer WhatsApp Button');
-                setIsQuoteModalOpen(true);
-              }} 
-              className="p-1 hover:scale-110 transition-transform active:scale-95 outline-none bg-transparent border-none"
+            <button
+              onClick={() => { trackConversion('Footer WhatsApp'); setIsQuoteModalOpen(true); }}
+              className="flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-green-600 transition-colors outline-none cursor-pointer"
+              style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              <WhatsAppLogo size={40} />
+              <WhatsAppLogo size={14} /> Get in touch
             </button>
           </div>
-          <p className="text-[8px] font-black tracking-[0.3em] text-slate-300 uppercase italic">© 2026 Melon Magnets • Made with ❤️ in Bengaluru</p>
-        </footer>
-      </div>
+        </div>
+      </footer>
 
+      {/* ── QUOTE MODAL ── */}
       <AnimatePresence>
         {isQuoteModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsQuoteModalOpen(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-            <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl overflow-hidden">
-              <div className="p-8">
+          <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-4">
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsQuoteModalOpen(false)}
+              className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="relative w-full md:max-w-md bg-white md:rounded-2xl rounded-t-2xl shadow-2xl overflow-hidden"
+            >
+              <div className="p-6 md:p-8">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-['Outfit'] font-black uppercase tracking-tight text-slate-800 font-bold underline decoration-melon-orange decoration-4">Bulk Inquiry</h3>
-                  <button onClick={() => setIsQuoteModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors"><X size={20} /></button>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Inter', sans-serif" }}>Bulk Inquiry</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">We'll respond within 24 hours</p>
+                  </div>
+                  <button onClick={() => setIsQuoteModalOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors outline-none cursor-pointer">
+                    <X size={18} className="text-slate-500" />
+                  </button>
                 </div>
                 <form onSubmit={handleBulkSubmit} className="space-y-4">
+                  {[
+                    { key: 'qty', label: 'Estimated Quantity', type: 'number', placeholder: 'e.g. 150' },
+                    { key: 'size', label: 'Size Preference', type: 'text', placeholder: 'e.g. 2×2 inch or Custom Shape' },
+                    { key: 'location', label: 'Delivery Location', type: 'text', placeholder: 'City, State' },
+                  ].map(({ key, label, type, placeholder }) => (
+                    <div key={key}>
+                      <label className="block text-xs font-semibold text-slate-500 mb-1.5" style={{ fontFamily: "'Inter', sans-serif" }}>{label}</label>
+                      <input
+                        required type={type} placeholder={placeholder}
+                        value={quoteDetails[key as keyof typeof quoteDetails]}
+                        onChange={(e) => setQuoteDetails({ ...quoteDetails, [key]: e.target.value })}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:ring-2 focus:ring-melon-orange focus:border-transparent transition-all outline-none placeholder:text-slate-400"
+                      />
+                    </div>
+                  ))}
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 font-bold">Estimated Quantity</label>
-                    <input required type="number" placeholder="e.g. 150" value={quoteDetails.qty} onChange={(e) => setQuoteDetails({ ...quoteDetails, qty: e.target.value })} className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-melon-orange transition-all outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 font-bold">Size Preference</label>
-                    <input required type="text" placeholder="e.g. 2x2 inch or Custom Shape" value={quoteDetails.size} onChange={(e) => setQuoteDetails({ ...quoteDetails, size: e.target.value })} className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-melon-orange transition-all outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 font-bold">Delivery Location</label>
-                    <input required type="text" placeholder="City, State" value={quoteDetails.location} onChange={(e) => setQuoteDetails({ ...quoteDetails, location: e.target.value })} className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-melon-orange transition-all outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 font-bold">Required By</label>
+                    <label className="block text-xs font-semibold text-slate-500 mb-1.5" style={{ fontFamily: "'Inter', sans-serif" }}>Required By</label>
                     <div className="relative">
-                      <input required type="date" value={quoteDetails.date} onChange={(e) => setQuoteDetails({ ...quoteDetails, date: e.target.value })} className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-melon-orange transition-all outline-none appearance-none" />
-                      <Calendar className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={18} />
+                      <input
+                        required type="date"
+                        value={quoteDetails.date}
+                        onChange={(e) => setQuoteDetails({ ...quoteDetails, date: e.target.value })}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:ring-2 focus:ring-melon-orange focus:border-transparent transition-all outline-none appearance-none"
+                      />
+                      <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
                     </div>
                   </div>
-                  <button type="submit" className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-green-600 transition-all shadow-lg active:scale-95 mt-4 font-bold">
-                    <WhatsAppLogo size={18} /> Send to WhatsApp
+                  <button
+                    type="submit"
+                    className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white py-3.5 rounded-xl text-sm font-semibold hover:bg-green-600 transition-colors mt-2 outline-none cursor-pointer"
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                  >
+                    <WhatsAppLogo size={18} /> Send via WhatsApp
                   </button>
                 </form>
               </div>
