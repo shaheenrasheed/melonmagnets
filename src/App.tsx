@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, memo } from 'react';
 import { Mail, MapPin, Globe, Ruler, X, Calendar, ArrowRight, CheckCircle, InstagramIcon } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { WovenCanvas } from './components/ui/woven-canvas';
 
 const RubberMagnets = [
   { id: 1, name: 'Standard Portrait', sizeIn: '2.17" × 3.39"', sizeCm: '5.5 × 8.6 cm', price: '₹50', media: '/videos/product1.mp4', fallback: '/images/product1.jpg' },
@@ -65,7 +66,7 @@ export default function App() {
 
   const handleProductInquiry = useCallback((product: any) => {
     trackConversion(`Inquiry: ${product.name}`);
-    const message = `Hi Melon Magnets!\n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} (${product.sizeCm})\nPrice: ${product.price}\n\nPlease share more details.`;
+    const message = `Hi Melon Magnets!\n\nI'm interested in:\n\nProduct: ${product.name}\nSize: ${product.sizeIn} | ${product.sizeCm}\nPrice: ${product.price}\n\nPlease share more details.`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   }, [whatsappNumber]);
 
@@ -86,7 +87,7 @@ export default function App() {
     <div className="min-h-screen bg-white text-slate-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* ── NAV ── */}
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <button
             onClick={() => aboutRef.current?.scrollIntoView({ behavior: 'smooth' })}
@@ -94,7 +95,7 @@ export default function App() {
           >
             <img src="/logo.png" alt="MelonMagnets" className="h-9 md:h-14 w-auto group-hover:scale-105 transition-transform" />
             <span style={{ fontFamily: "'Inter', sans-serif" }} className="text-base font-bold tracking-tight text-slate-800">
-              Melon<span className="text-melon-orange">Magnets</span>
+              Melon<span className="text-melon-yellow">Magnets</span>
             </span>
           </button>
 
@@ -115,64 +116,69 @@ export default function App() {
       </nav>
 
       {/* ── HERO ── */}
-      <header className="max-w-6xl mx-auto px-4 md:px-8 pt-20 pb-16 md:pt-28 md:pb-24">
-        <motion.div initial="hidden" animate="visible" className="max-w-4xl">
-          <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 text-melon-orange px-3.5 py-1.5 rounded-full text-xs font-semibold mb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-melon-orange animate-pulse inline-block" />
-            Bengaluru's Premium Magnet Studio
+      <div className="relative overflow-hidden bg-stone-950 min-h-[88vh] flex items-center">
+        <WovenCanvas />
+        {/* Gradient: solid dark on left (text area) fades to transparent on right (particles show) */}
+        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-stone-950 from-40% via-stone-950/75 via-65% to-transparent pointer-events-none" />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-28 w-full">
+          <motion.div initial="hidden" animate="visible" className="max-w-4xl">
+            <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 bg-melon-yellow/10 border border-melon-yellow/25 text-melon-yellow px-3.5 py-1.5 rounded-full text-xs font-semibold mb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-melon-yellow animate-pulse inline-block" />
+              Bengaluru's Premium Magnet Studio
+            </motion.div>
+
+            <motion.h1
+              variants={fadeUp}
+              custom={1}
+              className="text-4xl md:text-7xl font-black leading-[1.05] tracking-tight text-white mb-6"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              Turn moments into<br />
+              <span className="text-melon-yellow">magnetic memories.</span>
+            </motion.h1>
+
+            <motion.p variants={fadeUp} custom={2} className="text-base md:text-xl text-slate-300 leading-relaxed mb-10 max-w-2xl font-normal">
+              Custom fridge magnets and souvenirs for corporate events, weddings, and bulk gifting — designed with care, delivered pan-India.
+            </motion.p>
+
+            <motion.div variants={fadeUp} custom={3} className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => { trackConversion('Hero Quote Click'); setIsQuoteModalOpen(true); }}
+                className="flex items-center gap-2 bg-melon-yellow text-stone-900 px-6 py-3 rounded-lg text-sm font-bold hover:bg-yellow-400 transition-colors outline-none"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                Get a Quote <ArrowRight size={16} />
+              </button>
+              <button
+                onClick={() => productsRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                className="flex items-center gap-2 border border-white/20 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:border-white/40 hover:bg-white/5 transition-colors bg-transparent outline-none cursor-pointer"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                Browse Products
+              </button>
+            </motion.div>
           </motion.div>
 
-          <motion.h1
-            variants={fadeUp}
-            custom={1}
-            className="text-4xl md:text-7xl font-black leading-[1.05] tracking-tight text-slate-900 mb-6"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+          {/* Stats strip */}
+          <motion.div
+            variants={fadeUp} custom={4}
+            initial="hidden" animate="visible"
+            className="flex flex-wrap items-center gap-x-10 gap-y-4 mt-16 pt-10 border-t border-white/10"
           >
-            Turn moments into<br />
-            <span className="text-melon-orange">magnetic memories.</span>
-          </motion.h1>
-
-          <motion.p variants={fadeUp} custom={2} className="text-base md:text-xl text-slate-500 leading-relaxed mb-10 max-w-2xl font-normal">
-            Custom fridge magnets and souvenirs for corporate events, weddings, and bulk gifting — designed with care, delivered pan-India.
-          </motion.p>
-
-          <motion.div variants={fadeUp} custom={3} className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => { trackConversion('Hero Quote Click'); setIsQuoteModalOpen(true); }}
-              className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:bg-slate-700 transition-colors outline-none"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              Get a Quote <ArrowRight size={16} />
-            </button>
-            <button
-              onClick={() => productsRef.current?.scrollIntoView({ behavior: 'smooth' })}
-              className="flex items-center gap-2 border border-slate-200 text-slate-700 px-6 py-3 rounded-lg text-sm font-semibold hover:border-slate-400 transition-colors bg-transparent outline-none cursor-pointer"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              Browse Products
-            </button>
+            {[
+              { value: '6,000+', label: 'Magnets sold' },
+              { value: '100+', label: 'Minimum bulk units' },
+              { value: 'Worldwide', label: 'Shipping coverage' },
+              { value: '2 types', label: 'Rubber & metal magnets' },
+            ].map(stat => (
+              <div key={stat.label}>
+                <div className="text-xl font-bold text-white" style={{ fontFamily: "'Inter', sans-serif" }}>{stat.value}</div>
+                <div className="text-xs text-slate-400 mt-0.5">{stat.label}</div>
+              </div>
+            ))}
           </motion.div>
-        </motion.div>
-
-        {/* Stats strip */}
-        <motion.div
-          variants={fadeUp} custom={4}
-          initial="hidden" animate="visible"
-          className="flex flex-wrap items-center gap-x-10 gap-y-4 mt-16 pt-10 border-t border-slate-100"
-        >
-          {[
-            { value: '6,000+', label: 'Magnets sold' },
-            { value: '100+', label: 'Minimum bulk units' },
-            { value: 'Worldwide', label: 'Shipping coverage' },
-            { value: '2 types', label: 'Rubber & metal magnets' },
-          ].map(stat => (
-            <div key={stat.label}>
-              <div className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Inter', sans-serif" }}>{stat.value}</div>
-              <div className="text-xs text-slate-400 mt-0.5">{stat.label}</div>
-            </div>
-          ))}
-        </motion.div>
-      </header>
+        </div>
+      </div>
 
       {/* ── CLIENTS ── */}
       <section className="border-y border-slate-100 bg-white py-12">
@@ -211,7 +217,7 @@ export default function App() {
         {/* Category 01 */}
         <section className="mb-24">
           <div className="mb-10">
-            <p className="text-xs font-semibold tracking-widest uppercase text-melon-orange mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>Category 01</p>
+            <p className="text-xs font-semibold tracking-widest uppercase text-melon-yellow mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>Category 01</p>
             <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
               Flexible Rubber Magnets
             </h2>
@@ -226,12 +232,14 @@ export default function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.07 }}
-                className="group border border-slate-200 rounded-xl overflow-hidden bg-white hover:border-slate-300 hover:shadow-lg transition-all duration-300"
+                className="group border border-slate-200 rounded-xl overflow-hidden bg-white hover:border-melon-yellow/40 hover:shadow-lg hover:shadow-yellow-100 transition-all duration-300"
               >
                 <MediaCard videoSrc={m.media} imageSrc={m.fallback} name={m.name} />
                 <div className="p-4 md:p-6">
-                  <h3 className="font-semibold text-sm md:text-base text-slate-900 mb-1 leading-snug" style={{ fontFamily: "'Inter', sans-serif" }}>{m.name}</h3>
-                  <p className="text-slate-400 text-xs mb-4">{m.sizeIn} · {m.sizeCm}</p>
+                  <h3 className="font-semibold text-sm md:text-base text-slate-900 mb-1.5 leading-snug" style={{ fontFamily: "'Inter', sans-serif" }}>{m.name}</h3>
+                  <p className="text-slate-400 text-xs mb-4 font-mono tracking-tight">
+                    {m.sizeIn} <span className="text-slate-300 mx-0.5">|</span> {m.sizeCm}
+                  </p>
                   <div className="flex items-center justify-between">
                     <span className="text-xl md:text-2xl font-bold text-slate-900" style={{ fontFamily: "'Inter', sans-serif" }}>{m.price}</span>
                     <button onClick={() => handleProductInquiry(m)} className="p-1 hover:scale-110 transition-transform outline-none bg-transparent border-none cursor-pointer">
@@ -248,16 +256,16 @@ export default function App() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: RubberMagnets.length * 0.07 }}
-              className="border border-dashed border-slate-200 rounded-xl overflow-hidden bg-slate-50 flex flex-col hover:bg-slate-100/70 transition-all duration-300"
+              className="border border-dashed border-melon-yellow/40 rounded-xl overflow-hidden bg-yellow-50/60 flex flex-col hover:bg-yellow-50 transition-all duration-300"
             >
               <div className="aspect-square flex flex-col items-center justify-center p-6 text-center">
-                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center mb-4">
-                  <Ruler size={18} className="text-slate-500" />
+                <div className="w-10 h-10 rounded-full bg-melon-yellow/15 flex items-center justify-center mb-4">
+                  <Ruler size={18} className="text-melon-yellow" />
                 </div>
                 <h3 className="font-bold text-sm md:text-lg text-slate-800 leading-snug mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>Custom Size<br />Bulk Orders</h3>
                 <span className="text-xs bg-slate-800 text-white px-3 py-1 rounded-full font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Min 100 units</span>
               </div>
-              <div className="p-4 md:p-6 border-t border-dashed border-slate-200">
+              <div className="p-4 md:p-6 border-t border-dashed border-melon-yellow/30">
                 <button
                   onClick={() => { trackConversion('Grid Request Quote Click'); setIsQuoteModalOpen(true); }}
                   className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-green-600 transition-colors outline-none cursor-pointer"
@@ -273,7 +281,7 @@ export default function App() {
         {/* Category 02 */}
         <section>
           <div className="mb-10">
-            <p className="text-xs font-semibold tracking-widest uppercase text-melon-orange mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>Category 02</p>
+            <p className="text-xs font-semibold tracking-widest uppercase text-melon-yellow mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>Category 02</p>
             <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
               Square Metal Magnets
             </h2>
@@ -282,12 +290,12 @@ export default function App() {
 
           <div className="grid md:grid-cols-3 gap-6 md:gap-8 items-start">
             {/* Feature list */}
-            <div className="border border-slate-100 rounded-xl p-6 md:p-8 bg-slate-50">
+            <div className="border border-yellow-100 rounded-xl p-6 md:p-8 bg-yellow-50/50">
               <p className="text-sm font-semibold text-slate-700 mb-5" style={{ fontFamily: "'Inter', sans-serif" }}>Perfect for</p>
               <ul className="space-y-3">
                 {['Photo gifts', 'Baby photos', 'Couples & weddings', 'Corporate gifting'].map(item => (
                   <li key={item} className="flex items-center gap-3 text-sm text-slate-600">
-                    <CheckCircle size={15} className="text-melon-orange shrink-0" />
+                    <CheckCircle size={15} className="text-melon-yellow shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -303,12 +311,14 @@ export default function App() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: idx * 0.07 }}
-                  className="group border border-slate-200 rounded-xl overflow-hidden bg-white hover:border-slate-300 hover:shadow-lg transition-all duration-300"
+                  className="group border border-slate-200 rounded-xl overflow-hidden bg-white hover:border-melon-yellow/40 hover:shadow-lg hover:shadow-yellow-100 transition-all duration-300"
                 >
                   <MediaCard videoSrc={m.media} imageSrc={m.fallback} name={m.name} />
                   <div className="p-4 md:p-6">
-                    <h3 className="font-semibold text-sm md:text-base text-slate-900 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>{m.name}</h3>
-                    <p className="text-slate-400 text-xs mb-4">{m.sizeIn} · {m.sizeCm}</p>
+                    <h3 className="font-semibold text-sm md:text-base text-slate-900 mb-1.5" style={{ fontFamily: "'Inter', sans-serif" }}>{m.name}</h3>
+                    <p className="text-slate-400 text-xs mb-4 font-mono tracking-tight">
+                      {m.sizeIn} <span className="text-slate-300 mx-0.5">|</span> {m.sizeCm}
+                    </p>
                     <div className="flex items-center justify-between">
                       <span className="text-xl md:text-2xl font-bold text-slate-900" style={{ fontFamily: "'Inter', sans-serif" }}>{m.price}</span>
                       <button onClick={() => handleProductInquiry(m)} className="p-1 hover:scale-110 transition-transform outline-none bg-transparent border-none cursor-pointer">
@@ -324,66 +334,60 @@ export default function App() {
       </main>
 
       {/* ── ABOUT ── */}
-      <section ref={aboutRef} className="bg-slate-950 scroll-mt-16">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-28">
-          <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-            <div>
-              <p className="text-xs font-semibold tracking-widest uppercase text-melon-orange mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>About Us</p>
-              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section ref={aboutRef} className="bg-stone-950 scroll-mt-16">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 pt-20 pb-16 md:pt-28 md:pb-20">
+
+          {/* Headline + Story */}
+          <div className="grid md:grid-cols-5 gap-12 md:gap-16 mb-16 md:mb-24 items-start">
+            <div className="md:col-span-2">
+              <p className="text-xs font-semibold tracking-widest uppercase text-melon-yellow mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>About Us</p>
+              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Making memories stick<br />since day one.
               </h2>
-              <div className="space-y-4 text-slate-400 text-sm md:text-base leading-relaxed">
-                <p>Melon Magnets started in Bengaluru with one idea — turn special moments into beautiful keepsakes that last.</p>
-                <p>From custom photo magnets to large-scale event orders, we work with brands, event organizers, and individuals who care about quality and detail.</p>
-                <p className="text-melon-orange font-medium">Every magnet tells a story. Let's create yours.</p>
+            </div>
+            <div className="md:col-span-3 flex flex-col justify-end space-y-5 text-slate-400 text-sm md:text-base leading-relaxed md:pt-3">
+              <p>Melon Magnets started in Bengaluru with one idea — turn special moments into beautiful keepsakes that last.</p>
+              <p>From custom photo magnets to large-scale event orders, we work with brands, event organizers, and individuals who care about quality and detail.</p>
+              <p className="text-melon-yellow font-semibold">Every magnet tells a story. Let's create yours.</p>
+            </div>
+          </div>
+
+          {/* Contact strip */}
+          <div className="border-t border-white/10 pt-12 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+            <a href="mailto:hello@melonmagnets.com" className="group outline-none">
+              <div className="flex items-center gap-2 mb-3">
+                <Mail size={13} className="text-melon-yellow" />
+                <p className="text-xs font-semibold tracking-widest uppercase text-slate-500" style={{ fontFamily: "'Inter', sans-serif" }}>Email us</p>
               </div>
+              <p className="text-white text-sm md:text-base font-medium group-hover:text-melon-yellow transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>hello@melonmagnets.com</p>
+            </a>
+
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin size={13} className="text-melon-yellow" />
+                <p className="text-xs font-semibold tracking-widest uppercase text-slate-500" style={{ fontFamily: "'Inter', sans-serif" }}>Studio location</p>
+              </div>
+              <p className="text-white text-sm md:text-base font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Vizbook, Yashwantpur,<br />Bengaluru 560022</p>
             </div>
 
-            <div className="space-y-4">
-              <a
-                href="mailto:hello@melonmagnets.com"
-                className="flex items-center gap-4 p-5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors group outline-none"
-              >
-                <div className="w-10 h-10 rounded-lg bg-melon-orange/10 flex items-center justify-center shrink-0">
-                  <Mail size={18} className="text-melon-orange" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>Email us</p>
-                  <p className="text-sm font-medium text-white group-hover:text-melon-orange transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>hello@melonmagnets.com</p>
-                </div>
-              </a>
-
-              <div className="flex items-center gap-4 p-5 rounded-xl border border-white/10 bg-white/5">
-                <div className="w-10 h-10 rounded-lg bg-melon-orange/10 flex items-center justify-center shrink-0">
-                  <MapPin size={18} className="text-melon-orange" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>Studio location</p>
-                  <p className="text-sm font-medium text-white" style={{ fontFamily: "'Inter', sans-serif" }}>Vizbook, Yashwantpur, Bengaluru 560022</p>
-                </div>
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Globe size={13} className="text-melon-yellow" />
+                <p className="text-xs font-semibold tracking-widest uppercase text-slate-500" style={{ fontFamily: "'Inter', sans-serif" }}>Delivery</p>
               </div>
-
-              <div className="flex items-center gap-4 p-5 rounded-xl border border-white/10 bg-white/5">
-                <div className="w-10 h-10 rounded-lg bg-melon-orange/10 flex items-center justify-center shrink-0">
-                  <Globe size={18} className="text-melon-orange" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>Delivery</p>
-                  <p className="text-sm font-medium text-white" style={{ fontFamily: "'Inter', sans-serif" }}>Pan-India shipping available</p>
-                </div>
-              </div>
+              <p className="text-white text-sm md:text-base font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Pan-India shipping available</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-slate-950 border-t border-white/5">
+      <footer className="bg-stone-950 border-t border-white/5">
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="MelonMagnets" className="h-7 w-auto" />
+            <img src="/logo.png" alt="MelonMagnets" className="h-10 w-auto" />
             <span className="text-sm font-bold text-slate-400" style={{ fontFamily: "'Inter', sans-serif" }}>
-              Melon<span className="text-melon-orange">Magnets</span>
+              Melon<span className="text-melon-yellow">Magnets</span>
             </span>
           </div>
 
@@ -392,7 +396,7 @@ export default function App() {
           </p>
 
           <div className="flex items-center gap-4">
-            <a href={instaLink} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:border-white/20 transition-colors outline-none">
+            <a href={instaLink} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-slate-400 hover:text-melon-yellow hover:border-melon-yellow/30 transition-colors outline-none">
               <InstagramIcon size={16} />
             </a>
             <button
@@ -444,7 +448,7 @@ export default function App() {
                         required type={type} placeholder={placeholder}
                         value={quoteDetails[key as keyof typeof quoteDetails]}
                         onChange={(e) => setQuoteDetails({ ...quoteDetails, [key]: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:ring-2 focus:ring-melon-orange focus:border-transparent transition-all outline-none placeholder:text-slate-400"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:ring-2 focus:ring-melon-yellow focus:border-transparent transition-all outline-none placeholder:text-slate-400"
                       />
                     </div>
                   ))}
@@ -455,7 +459,7 @@ export default function App() {
                         required type="date"
                         value={quoteDetails.date}
                         onChange={(e) => setQuoteDetails({ ...quoteDetails, date: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:ring-2 focus:ring-melon-orange focus:border-transparent transition-all outline-none appearance-none"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:ring-2 focus:ring-melon-yellow focus:border-transparent transition-all outline-none appearance-none"
                       />
                       <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
                     </div>

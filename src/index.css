@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --color-melon-yellow: #F5C518;
+  --color-melon-green: #2D5A27;
+}
+
 @layer utilities {
   @keyframes float {
     0% { transform: translateY(0px) translateX(0px); }
@@ -19,7 +24,7 @@
     100% { transform: translateX(-50%); }
   }
   .animate-marquee {
-    animation: marquee 28s linear infinite;
+    animation: marquee 18s linear infinite;
   }
   .animate-marquee:hover {
     animation-play-state: paused;

@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         'melon-green': '#2D5A27',
-        'melon-orange': '#FF8C42',
+        'melon-yellow': '#F5C518',
       }
     },
   },
