@@ -6,7 +6,7 @@ import type { DistrictData, Category } from '../../types/travel';
 import { SpotCard } from '../../components/travel/SpotCard';
 import { FilterBar } from '../../components/travel/FilterBar';
 import { HeroSection } from '../../components/travel/HeroSection';
-import { StickyMagnetCTA, InlineMagnetCTA } from '../../components/travel/MagnetCTA';
+import { InlineMagnetCTA } from '../../components/travel/MagnetCTA';
 import { getLastUpdated } from '../../lib/places';
 
 const WHATSAPP_NUMBER = '919787337194';
@@ -65,10 +65,24 @@ export default function DistrictPage({ data }: { data: DistrictData }) {
 
   return (
     <>
-      {/* React 19 native metadata */}
+      {/* React 19 native metadata — hoisted to <head> automatically */}
       <title>{`${data.district} Tourist Places ${new Date().getFullYear()} — Timings, Entry Fees & Itinerary | MelonMagnets`}</title>
       <meta name="description" content={`Complete guide to ${data.spots.length} ${data.district} tourist spots with ticket prices, timings and Google Maps links. Free ${data.idealDays} itinerary.`} />
       <link rel="canonical" href={`https://www.melonmagnets.com/travel/${data.productSlug}`} />
+      {/* Open Graph — WhatsApp, Instagram, Facebook previews */}
+      <meta property="og:title" content={`${data.district} Tourist Places ${new Date().getFullYear()} — Timings, Entry Fees & Itinerary`} />
+      <meta property="og:description" content={`Complete guide to ${data.spots.length} ${data.district} tourist spots with ticket prices, timings and Google Maps links. Free itinerary.`} />
+      <meta property="og:url" content={`https://www.melonmagnets.com/travel/${data.productSlug}`} />
+      <meta property="og:type" content="website" />
+      <meta property="og:image" content={`https://www.melonmagnets.com/images/travel/${data.productSlug}-og.jpg`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:site_name" content="MelonMagnets Travel Guide" />
+      {/* Twitter/X */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={`${data.district} Tourist Places ${new Date().getFullYear()} — Timings, Entry Fees & Itinerary`} />
+      <meta name="twitter:description" content={`${data.spots.length} spots with ticket prices, timings and Google Maps links.`} />
+      <meta name="twitter:image" content={`https://www.melonmagnets.com/images/travel/${data.productSlug}-og.jpg`} />
 
       <div className="min-h-screen" style={{ backgroundColor: '#f2f2f7', fontFamily: "'Plus Jakarta Sans', sans-serif", paddingBottom: '80px' }}>
 
@@ -124,13 +138,8 @@ export default function DistrictPage({ data }: { data: DistrictData }) {
           )}
 
           {/* Inline magnet CTA */}
-          <div className="mt-4">
-            <InlineMagnetCTA district={data.district} whatsappNumber={WHATSAPP_NUMBER} message={waMessage} />
-          </div>
+          <InlineMagnetCTA district={data.district} whatsappNumber={WHATSAPP_NUMBER} message={waMessage} />
         </div>
-
-        {/* Sticky bottom CTA */}
-        <StickyMagnetCTA district={data.district} whatsappNumber={WHATSAPP_NUMBER} message={waMessage} />
       </div>
     </>
   );

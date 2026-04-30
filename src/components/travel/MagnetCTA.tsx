@@ -1,7 +1,4 @@
-import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-
-const DISMISS_KEY = 'melon_cta_dismissed_v1';
+import { motion } from 'framer-motion';
 
 function track(event: string, params: Record<string, string>) {
   if (typeof window.gtag !== 'undefined') {
@@ -15,51 +12,6 @@ interface CTAProps {
   message: string;
 }
 
-export function StickyMagnetCTA({ district, whatsappNumber, message }: CTAProps) {
-  const [dismissed, setDismissed] = useState(true); // start hidden to avoid flash
-
-  useEffect(() => {
-    setDismissed(localStorage.getItem(DISMISS_KEY) === 'true');
-  }, []);
-
-  const handleDismiss = () => {
-    localStorage.setItem(DISMISS_KEY, 'true');
-    setDismissed(true);
-  };
-
-  const handleClick = () => {
-    track('magnet_cta_click', { district, location: 'sticky' });
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-  };
-
-  if (dismissed) return null;
-
-  return (
-    <div
-      className="fixed bottom-0 left-0 right-0 z-50 bg-stone-950 border-t border-white/10 flex items-center gap-3 px-4"
-      style={{ height: '60px' }}
-    >
-      <p className="flex-1 text-white font-medium leading-tight min-w-0 truncate" style={{ fontSize: '13px' }}>
-        🧲 Taking this trip? Grab a {district} magnet!
-      </p>
-      <button
-        onClick={handleClick}
-        className="shrink-0 bg-[#25D366] text-white rounded-lg font-bold whitespace-nowrap"
-        style={{ padding: '8px 14px', fontSize: '13px' }}
-      >
-        Order Now
-      </button>
-      <button
-        onClick={handleDismiss}
-        className="shrink-0 text-slate-400 outline-none border-none bg-transparent cursor-pointer p-1"
-        aria-label="Dismiss"
-      >
-        <X size={15} />
-      </button>
-    </div>
-  );
-}
-
 export function InlineMagnetCTA({ district, whatsappNumber, message }: CTAProps) {
   const handleClick = () => {
     track('magnet_cta_click', { district, location: 'inline' });
@@ -67,20 +19,64 @@ export function InlineMagnetCTA({ district, whatsappNumber, message }: CTAProps)
   };
 
   return (
-    <div className="rounded-2xl p-5 text-center" style={{ backgroundColor: '#F5C518' }}>
-      <p className="font-black text-stone-900 mb-1" style={{ fontSize: '17px', fontFamily: "'Inter', sans-serif" }}>
-        Visiting {district}? Bring it home forever. 🧲
-      </p>
-      <p className="text-stone-700 mb-4" style={{ fontSize: '13px' }}>
-        Custom fridge magnets of your favourite spots
-      </p>
-      <button
-        onClick={handleClick}
-        className="bg-stone-900 text-white rounded-xl font-bold w-full"
-        style={{ padding: '13px', fontSize: '14px' }}
+    // Outer wrapper adds top padding so the overflowing image has room above the card
+    <div style={{ paddingTop: '44px' }}>
+      <div
+        className="rounded-2xl relative"
+        style={{ backgroundColor: '#F5C518', padding: '22px 20px 22px 20px', minHeight: '155px' }}
       >
-        Order Your {district} Magnet →
-      </button>
+        {/* Left column — text + button, padded right to leave room for the image */}
+        <div style={{ paddingRight: '128px' }}>
+          <p
+            className="font-black text-stone-900 leading-snug mb-2"
+            style={{ fontSize: '17px', fontFamily: "'Inter', sans-serif" }}
+          >
+            Visiting {district}?<br />Bring it home forever. 🧲
+          </p>
+          <p className="text-stone-700 mb-4" style={{ fontSize: '13px' }}>
+            Custom fridge magnets of your favourite spots
+          </p>
+          <button
+            onClick={handleClick}
+            className="text-white font-bold rounded-xl"
+            style={{
+              backgroundColor: '#111111',
+              padding: '12px 18px',
+              fontSize: '14px',
+              fontFamily: "'Inter', sans-serif",
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Order Your {district} Magnet →
+          </button>
+        </div>
+
+        {/* Magnet image — absolutely positioned, overflows above the card */}
+        <motion.img
+          src="/magnet.png"
+          alt={`${district} fridge magnet`}
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            position: 'absolute',
+            right: '-2px',
+            top: '-44px',
+            height: '190px',
+            width: 'auto',
+            objectFit: 'contain',
+            backgroundColor: 'transparent',
+            rotate: 10,                                       // Framer Motion compose with y animation
+            filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.28)) drop-shadow(0 4px 8px rgba(0,0,0,0.12))',
+          }}
+        />
+      </div>
     </div>
   );
+}
+
+// Kept for reference — removed from DistrictPage per user request
+export function StickyMagnetCTA(_props: CTAProps) {
+  return null;
 }

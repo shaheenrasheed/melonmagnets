@@ -83,9 +83,11 @@ export function PhotoCarousel({ photos, spotName, category }: Props) {
         style={{
           scrollSnapType: 'x mandatory',
           scrollbarWidth: 'none',
-          // Allow horizontal pan for the carousel; vertical pan goes to the page
-          touchAction: 'pan-x',
-          // Smooth momentum scrolling on iOS
+          // pan-x pan-y: lets the browser handle BOTH directions.
+          // Our JS onTouchEnd handler picks up horizontal swipes for the carousel;
+          // vertical swipes pass through to the page scroll naturally.
+          // (pan-x alone blocks vertical — that's why the page wouldn't scroll)
+          touchAction: 'pan-x pan-y',
           WebkitOverflowScrolling: 'touch',
         } as React.CSSProperties}
       >

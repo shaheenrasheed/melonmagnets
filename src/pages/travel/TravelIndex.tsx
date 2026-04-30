@@ -62,9 +62,19 @@ export default function TravelIndex() {
   return (
     <>
       {/* React 19 native metadata — hoisted to <head> automatically */}
-      <title>India Travel Guide — Tourist Spots, Timings & Entry Fees | MelonMagnets</title>
-      <meta name="description" content={`Free itineraries with ticket prices, Google Maps links and local tips. Updated ${new Date().getFullYear()}.`} />
+      <title>Kerala Travel Guide — Tourist Spots, Timings & Entry Fees | MelonMagnets</title>
+      <meta name="description" content="Free travel guides for Kerala districts. Timings, ticket prices and Google Maps links for every major tourist spot. Wayanad, Munnar, Alleppey & more." />
       <link rel="canonical" href="https://www.melonmagnets.com/travel" />
+      <meta property="og:title" content="Kerala Travel Guide — Tourist Spots, Timings & Entry Fees" />
+      <meta property="og:description" content="Free travel guides for Kerala districts with timings, ticket prices and Google Maps links." />
+      <meta property="og:url" content="https://www.melonmagnets.com/travel" />
+      <meta property="og:type" content="website" />
+      <meta property="og:image" content="https://www.melonmagnets.com/images/travel/kerala-og.jpg" />
+      <meta property="og:site_name" content="MelonMagnets Travel Guide" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="Kerala Travel Guide — Tourist Spots, Timings & Entry Fees" />
+      <meta name="twitter:description" content="Free travel guides for Kerala districts with timings, ticket prices and Google Maps links." />
+      <meta name="twitter:image" content="https://www.melonmagnets.com/images/travel/kerala-og.jpg" />
 
       <div className="min-h-screen bg-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
         {/* Nav */}
