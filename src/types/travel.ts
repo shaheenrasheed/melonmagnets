@@ -3,6 +3,7 @@ export type Category = 'Adventure' | 'Nature' | 'Wildlife' | 'Culture' | 'Waterf
 export type Spot = {
   name: string;
   category: Category;
+  placeId: string;
   timings: string;
   price: string;
   priceNote: string;
@@ -10,6 +11,8 @@ export type Spot = {
   website: string;
   tip: string;
   isNew: boolean;
+  googleRating?: number;
+  reviewCount?: number;
 };
 
 export type DistrictData = {

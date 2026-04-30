@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "fetch-places": "npx tsx scripts/fetchPlaces.ts",
+    "fetch-places-dry": "npx tsx scripts/fetchPlaces.ts --dry-run"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.2.1",
@@ -33,6 +35,7 @@
     "globals": "^16.5.0",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
+    "tsx": "^4.21.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",
     "vite": "^8.0.0-beta.13"
