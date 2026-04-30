@@ -289,8 +289,8 @@ export default function App() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 md:gap-8 items-start">
-            {/* Feature list */}
-            <div className="border border-yellow-100 rounded-xl p-6 md:p-8 bg-yellow-50/50">
+            {/* Feature list — hidden on mobile to save space */}
+            <div className="hidden md:block border border-yellow-100 rounded-xl p-6 md:p-8 bg-yellow-50/50">
               <p className="text-sm font-semibold text-slate-700 mb-5" style={{ fontFamily: "'Inter', sans-serif" }}>Perfect for</p>
               <ul className="space-y-3">
                 {['Photo gifts', 'Baby photos', 'Couples & weddings', 'Corporate gifting'].map(item => (
@@ -302,8 +302,8 @@ export default function App() {
               </ul>
             </div>
 
-            {/* Product cards */}
-            <div className="md:col-span-2 grid grid-cols-2 gap-4 md:gap-6">
+            {/* Product cards — single column on mobile, 2-col on desktop */}
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {PremiumMagnets.map((m, idx) => (
                 <motion.article
                   key={m.id}
@@ -313,17 +313,22 @@ export default function App() {
                   transition={{ duration: 0.5, delay: idx * 0.07 }}
                   className="group border border-slate-200 rounded-xl overflow-hidden bg-white hover:border-melon-yellow/40 hover:shadow-lg hover:shadow-yellow-100 transition-all duration-300"
                 >
-                  <MediaCard videoSrc={m.media} imageSrc={m.fallback} name={m.name} />
-                  <div className="p-4 md:p-6">
-                    <h3 className="font-semibold text-sm md:text-base text-slate-900 mb-1.5" style={{ fontFamily: "'Inter', sans-serif" }}>{m.name}</h3>
-                    <p className="text-slate-400 text-xs mb-4 font-mono tracking-tight">
-                      {m.sizeIn} <span className="text-slate-300 mx-0.5">|</span> {m.sizeCm}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xl md:text-2xl font-bold text-slate-900" style={{ fontFamily: "'Inter', sans-serif" }}>{m.price}</span>
-                      <button onClick={() => handleProductInquiry(m)} className="p-1 hover:scale-110 transition-transform outline-none bg-transparent border-none cursor-pointer">
-                        <WhatsAppLogo size={30} />
-                      </button>
+                  {/* Mobile: side-by-side layout to avoid full-screen video */}
+                  <div className="flex md:block">
+                    <div className="w-32 shrink-0 md:w-auto">
+                      <MediaCard videoSrc={m.media} imageSrc={m.fallback} name={m.name} />
+                    </div>
+                    <div className="p-4 md:p-6 flex flex-col justify-center md:block">
+                      <h3 className="font-semibold text-sm md:text-base text-slate-900 mb-1.5" style={{ fontFamily: "'Inter', sans-serif" }}>{m.name}</h3>
+                      <p className="text-slate-400 text-xs mb-3 font-mono tracking-tight">
+                        {m.sizeIn} <span className="text-slate-300 mx-0.5">|</span> {m.sizeCm}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xl md:text-2xl font-bold text-slate-900" style={{ fontFamily: "'Inter', sans-serif" }}>{m.price}</span>
+                        <button onClick={() => handleProductInquiry(m)} className="p-1 hover:scale-110 transition-transform outline-none bg-transparent border-none cursor-pointer">
+                          <WhatsAppLogo size={30} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </motion.article>
@@ -335,47 +340,47 @@ export default function App() {
 
       {/* ── ABOUT ── */}
       <section ref={aboutRef} className="bg-stone-950 scroll-mt-16">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 pt-20 pb-16 md:pt-28 md:pb-20">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 pt-12 pb-10 md:pt-28 md:pb-20">
 
           {/* Headline + Story */}
-          <div className="grid md:grid-cols-5 gap-12 md:gap-16 mb-16 md:mb-24 items-start">
+          <div className="grid md:grid-cols-5 gap-6 md:gap-16 mb-8 md:mb-24 items-start">
             <div className="md:col-span-2">
-              <p className="text-xs font-semibold tracking-widest uppercase text-melon-yellow mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>About Us</p>
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <p className="text-xs font-semibold tracking-widest uppercase text-melon-yellow mb-4 md:mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>About Us</p>
+              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Making memories stick<br />since day one.
               </h2>
             </div>
-            <div className="md:col-span-3 flex flex-col justify-end space-y-5 text-slate-400 text-sm md:text-base leading-relaxed md:pt-3">
+            <div className="md:col-span-3 flex flex-col justify-end space-y-3 md:space-y-5 text-slate-400 text-sm md:text-base leading-relaxed md:pt-3">
               <p>Melon Magnets started in Bengaluru with one idea — turn special moments into beautiful keepsakes that last.</p>
-              <p>From custom photo magnets to large-scale event orders, we work with brands, event organizers, and individuals who care about quality and detail.</p>
+              <p className="hidden md:block">From custom photo magnets to large-scale event orders, we work with brands, event organizers, and individuals who care about quality and detail.</p>
               <p className="text-melon-yellow font-semibold">Every magnet tells a story. Let's create yours.</p>
             </div>
           </div>
 
-          {/* Contact strip */}
-          <div className="border-t border-white/10 pt-12 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
-            <a href="mailto:hello@melonmagnets.com" className="group outline-none">
-              <div className="flex items-center gap-2 mb-3">
-                <Mail size={13} className="text-melon-yellow" />
-                <p className="text-xs font-semibold tracking-widest uppercase text-slate-500" style={{ fontFamily: "'Inter', sans-serif" }}>Email us</p>
+          {/* Contact strip — inline rows on mobile, 3-col grid on desktop */}
+          <div className="border-t border-white/10 pt-6 md:pt-12 space-y-3 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
+            <a href="mailto:hello@melonmagnets.com" className="group outline-none flex items-center gap-3 md:block">
+              <div className="flex items-center gap-1.5 w-24 shrink-0 md:w-auto md:mb-3">
+                <Mail size={12} className="text-melon-yellow shrink-0" />
+                <p className="text-xs font-semibold tracking-wider uppercase text-slate-500" style={{ fontFamily: "'Inter', sans-serif" }}>Email</p>
               </div>
-              <p className="text-white text-sm md:text-base font-medium group-hover:text-melon-yellow transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>hello@melonmagnets.com</p>
+              <p className="text-white text-sm font-medium group-hover:text-melon-yellow transition-colors truncate" style={{ fontFamily: "'Inter', sans-serif" }}>hello@melonmagnets.com</p>
             </a>
 
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <MapPin size={13} className="text-melon-yellow" />
-                <p className="text-xs font-semibold tracking-widest uppercase text-slate-500" style={{ fontFamily: "'Inter', sans-serif" }}>Studio location</p>
+            <div className="flex items-center gap-3 md:block">
+              <div className="flex items-center gap-1.5 w-24 shrink-0 md:w-auto md:mb-3">
+                <MapPin size={12} className="text-melon-yellow shrink-0" />
+                <p className="text-xs font-semibold tracking-wider uppercase text-slate-500" style={{ fontFamily: "'Inter', sans-serif" }}>Location</p>
               </div>
-              <p className="text-white text-sm md:text-base font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Vizbook, Yashwantpur,<br />Bengaluru 560022</p>
+              <p className="text-white text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Vizbook, Yashwantpur, Bengaluru 560022</p>
             </div>
 
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Globe size={13} className="text-melon-yellow" />
-                <p className="text-xs font-semibold tracking-widest uppercase text-slate-500" style={{ fontFamily: "'Inter', sans-serif" }}>Delivery</p>
+            <div className="flex items-center gap-3 md:block">
+              <div className="flex items-center gap-1.5 w-24 shrink-0 md:w-auto md:mb-3">
+                <Globe size={12} className="text-melon-yellow shrink-0" />
+                <p className="text-xs font-semibold tracking-wider uppercase text-slate-500" style={{ fontFamily: "'Inter', sans-serif" }}>Delivery</p>
               </div>
-              <p className="text-white text-sm md:text-base font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Pan-India shipping available</p>
+              <p className="text-white text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Pan-India shipping available</p>
             </div>
           </div>
         </div>
@@ -383,7 +388,7 @@ export default function App() {
 
       {/* ── FOOTER ── */}
       <footer className="bg-stone-950 border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6">
           <div className="flex items-center gap-2.5">
             <img src="/logo.png" alt="MelonMagnets" className="h-10 w-auto" />
             <span className="text-sm font-bold text-slate-400" style={{ fontFamily: "'Inter', sans-serif" }}>
