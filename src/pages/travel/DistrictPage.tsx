@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import type { DistrictData, Category } from '../../types/travel';
@@ -22,6 +21,16 @@ export default function DistrictPage({ data }: { data: DistrictData }) {
   useEffect(() => {
     track('travel_page_view', { district: data.district.toLowerCase() });
   }, [data.district]);
+
+  // Inject JSON-LD structured data
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+    return () => { if (document.head.contains(script)) document.head.removeChild(script); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const categories = useMemo(() => {
     const seen = new Set<Category>();
@@ -52,15 +61,10 @@ export default function DistrictPage({ data }: { data: DistrictData }) {
 
   return (
     <>
-      <Helmet>
-        <title>{`${data.district} Tourist Places ${new Date().getFullYear()} — Timings, Entry Fees & Itinerary | MelonMagnets`}</title>
-        <meta
-          name="description"
-          content={`Complete guide to ${data.spots.length} ${data.district} tourist spots with ticket prices, timings and Google Maps links. Free ${data.idealDays} itinerary.`}
-        />
-        <link rel="canonical" href={`https://www.melonmagnets.com/travel/${data.productSlug}`} />
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+      {/* React 19 native metadata — hoisted to <head> automatically */}
+      <title>{`${data.district} Tourist Places ${new Date().getFullYear()} — Timings, Entry Fees & Itinerary | MelonMagnets`}</title>
+      <meta name="description" content={`Complete guide to ${data.spots.length} ${data.district} tourist spots with ticket prices, timings and Google Maps links. Free ${data.idealDays} itinerary.`} />
+      <link rel="canonical" href={`https://www.melonmagnets.com/travel/${data.productSlug}`} />
 
       <div className="min-h-screen bg-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", paddingBottom: '80px' }}>
         {/* Sticky nav bar */}

@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
@@ -62,14 +61,10 @@ const DISTRICTS = [
 export default function TravelIndex() {
   return (
     <>
-      <Helmet>
-        <title>India Travel Guide — Tourist Spots, Timings & Entry Fees | MelonMagnets</title>
-        <meta
-          name="description"
-          content={`Free itineraries with ticket prices, Google Maps links and local tips. Updated ${new Date().getFullYear()}.`}
-        />
-        <link rel="canonical" href="https://www.melonmagnets.com/travel" />
-      </Helmet>
+      {/* React 19 native metadata — hoisted to <head> automatically */}
+      <title>India Travel Guide — Tourist Spots, Timings & Entry Fees | MelonMagnets</title>
+      <meta name="description" content={`Free itineraries with ticket prices, Google Maps links and local tips. Updated ${new Date().getFullYear()}.`} />
+      <link rel="canonical" href="https://www.melonmagnets.com/travel" />
 
       <div className="min-h-screen bg-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
         {/* Nav */}

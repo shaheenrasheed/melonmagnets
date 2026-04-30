@@ -188,8 +188,8 @@ export const wayanadData: DistrictData = {
     {
       name: 'Vythiri Farm',
       category: 'Nature',
-      timings: 'Check locally',
-      price: 'Check locally',
+      timings: '9 AM – 9 PM',
+      price: '₹200',
       priceNote: 'Farm tourism; confirm at venue',
       mapsUrl: 'https://share.google/q3SPVUwlPYEjjiFzJ',
       website: '',
