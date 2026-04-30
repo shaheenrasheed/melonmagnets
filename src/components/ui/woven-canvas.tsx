@@ -8,11 +8,21 @@ export const WovenCanvas = () => {
     if (!mountRef.current) return;
     const mount = mountRef.current;
 
+    // Guard flag — set to true on cleanup so any stray RAF frame exits immediately
+    let cancelled = false;
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch {
+      // WebGL not supported or context limit hit — fail silently, no white page
+      return;
+    }
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mount.appendChild(renderer.domElement);
@@ -39,7 +49,6 @@ export const WovenCanvas = () => {
       positions[i * 3] = x; positions[i * 3 + 1] = y; positions[i * 3 + 2] = z;
       originalPositions[i * 3] = x; originalPositions[i * 3 + 1] = y; originalPositions[i * 3 + 2] = z;
 
-      // Gold/yellow color palette
       const color = new THREE.Color();
       const hue = 0.1 + Math.random() * 0.08;
       color.setHSL(hue, 0.95, 0.55 + Math.random() * 0.3);
@@ -75,6 +84,9 @@ export const WovenCanvas = () => {
     const mouseWorld = new THREE.Vector3();
 
     const animate = () => {
+      // Stop immediately if the component has been unmounted
+      if (cancelled) return;
+
       animId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
@@ -103,11 +115,18 @@ export const WovenCanvas = () => {
 
       geometry.attributes.position.needsUpdate = true;
       points.rotation.y = elapsedTime * 0.05;
-      renderer.render(scene, camera);
+
+      try {
+        renderer.render(scene, camera);
+      } catch {
+        // Renderer was disposed before this frame ran — stop loop
+        cancelled = true;
+      }
     };
     animate();
 
     const handleResize = () => {
+      if (cancelled) return;
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -115,6 +134,7 @@ export const WovenCanvas = () => {
     window.addEventListener('resize', handleResize);
 
     return () => {
+      cancelled = true;
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
