@@ -53,7 +53,7 @@ export default function DistrictPage({ data }: { data: DistrictData }) {
   return (
     <>
       <Helmet>
-        <title>{`${data.district} Tourist Places 2025 — Timings, Entry Fees & Itinerary | MelonMagnets`}</title>
+        <title>{`${data.district} Tourist Places ${new Date().getFullYear()} — Timings, Entry Fees & Itinerary | MelonMagnets`}</title>
         <meta
           name="description"
           content={`Complete guide to ${data.spots.length} ${data.district} tourist spots with ticket prices, timings and Google Maps links. Free ${data.idealDays} itinerary.`}

@@ -1,13 +1,14 @@
 import { useState, useRef, useCallback, memo } from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, MapPin, Globe, Ruler, X, Calendar, ArrowRight, CheckCircle, InstagramIcon } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { WovenCanvas } from './components/ui/woven-canvas';
 
 const RubberMagnets = [
-  { id: 1, name: 'Standard Portrait', sizeIn: '2.17" × 3.39"', sizeCm: '5.5 × 8.6 cm', price: '₹50', media: '/videos/product1.mp4', fallback: '/images/product1.jpg' },
-  { id: 2, name: 'Compact Rectangle', sizeIn: '1.97" × 2.95"', sizeCm: '5 × 7.5 cm', price: '₹30', media: '/videos/product2.mp4', fallback: '/images/product2.jpg' },
-  { id: 3, name: 'Large Square', sizeIn: '2.75" × 2.75"', sizeCm: '6.99 × 6.99 cm', price: '₹30', media: '/videos/product4.mp4', fallback: '/images/product4.jpg' },
-  { id: 4, name: 'Landscape Wide', sizeIn: '4" × 3"', sizeCm: '10.16 × 7.62 cm', price: '₹52', media: '/videos/product5.mp4', fallback: '/images/product5.jpg' },
+  { id: 1, name: 'Standard Portrait', sizeIn: '2.17" × 3.39"', sizeCm: '5.5 × 8.6 cm', price: '₹61', media: '/videos/product1.mp4', fallback: '/images/product1.jpg' },
+  { id: 2, name: 'Compact Rectangle', sizeIn: '1.97" × 2.95"', sizeCm: '5 × 7.5 cm', price: '₹35', media: '/videos/product2.mp4', fallback: '/images/product2.jpg' },
+  { id: 3, name: 'Large Square', sizeIn: '2.75" × 2.75"', sizeCm: '6.99 × 6.99 cm', price: '₹38', media: '/videos/product4.mp4', fallback: '/images/product4.jpg' },
+  { id: 4, name: 'Landscape Wide', sizeIn: '4" × 3"', sizeCm: '10.16 × 7.62 cm', price: '₹55', media: '/videos/product5.mp4', fallback: '/images/product5.jpg' },
   { id: 5, name: 'Sleek Rectangle', sizeIn: '1.97" × 3.15"', sizeCm: '5 × 8 cm', price: '₹60', media: '/videos/product6.mp4', fallback: '/images/product6.jpg' },
 ];
 
@@ -101,6 +102,7 @@ export default function App() {
 
           <div className="hidden md:flex items-center gap-8">
             <button onClick={() => productsRef.current?.scrollIntoView({ behavior: 'smooth' })} className="text-sm text-slate-500 hover:text-slate-900 transition-colors bg-transparent border-none cursor-pointer outline-none">Products</button>
+            <Link to="/travel" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Travel Guide</Link>
             <button onClick={() => aboutRef.current?.scrollIntoView({ behavior: 'smooth' })} className="text-sm text-slate-500 hover:text-slate-900 transition-colors bg-transparent border-none cursor-pointer outline-none">About</button>
             <a href="mailto:hello@melonmagnets.com" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Contact</a>
           </div>
@@ -156,6 +158,16 @@ export default function App() {
               >
                 Browse Products
               </button>
+            </motion.div>
+
+            <motion.div variants={fadeUp} custom={4}>
+              <Link
+                to="/travel"
+                className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                🗺️ Planning a trip to Kerala? See our free Travel Guide →
+              </Link>
             </motion.div>
           </motion.div>
 
@@ -388,7 +400,8 @@ export default function App() {
 
       {/* ── FOOTER ── */}
       <footer className="bg-stone-950 border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 pt-8 pb-5 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 items-start">
+          {/* Brand */}
           <div className="flex items-center gap-2.5">
             <img src="/logo.png" alt="MelonMagnets" className="h-10 w-auto" />
             <span className="text-sm font-bold text-slate-400" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -396,11 +409,17 @@ export default function App() {
             </span>
           </div>
 
-          <p className="text-xs text-slate-600 order-last md:order-none" style={{ fontFamily: "'Inter', sans-serif" }}>
-            © 2026 Melon Magnets. Made with care in Bengaluru.
-          </p>
+          {/* Free Tools */}
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase text-slate-500 mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>Free Tools</p>
+            <div className="flex flex-col gap-2">
+              <Link to="/travel" className="text-sm text-slate-400 hover:text-melon-yellow transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>Travel Guide</Link>
+              <Link to="/travel/wayanad" className="text-sm text-slate-400 hover:text-melon-yellow transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>Wayanad Tourist Spots</Link>
+            </div>
+          </div>
 
-          <div className="flex items-center gap-4">
+          {/* Social + CTA */}
+          <div className="flex md:justify-end items-center gap-4">
             <a href={instaLink} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-slate-400 hover:text-melon-yellow hover:border-melon-yellow/30 transition-colors outline-none">
               <InstagramIcon size={16} />
             </a>
@@ -412,6 +431,13 @@ export default function App() {
               <WhatsAppLogo size={14} /> Get in touch
             </button>
           </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="max-w-6xl mx-auto px-4 md:px-8 pb-5 border-t border-white/5 pt-4">
+          <p className="text-xs text-slate-600 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+            © 2026 Melon Magnets. Made with care in Bengaluru.
+          </p>
         </div>
       </footer>
 

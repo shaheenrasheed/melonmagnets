@@ -66,7 +66,7 @@ export default function TravelIndex() {
         <title>India Travel Guide — Tourist Spots, Timings & Entry Fees | MelonMagnets</title>
         <meta
           name="description"
-          content="Free itineraries with ticket prices, Google Maps links and local tips. Updated 2025."
+          content={`Free itineraries with ticket prices, Google Maps links and local tips. Updated ${new Date().getFullYear()}.`}
         />
         <link rel="canonical" href="https://www.melonmagnets.com/travel" />
       </Helmet>
@@ -102,7 +102,7 @@ export default function TravelIndex() {
               India Travel Guide
             </h1>
             <p className="text-slate-400 text-sm">
-              Tourist spots, timings &amp; entry fees — free itineraries updated 2025.
+              Tourist spots, timings &amp; entry fees — free itineraries updated {new Date().getFullYear()}.
             </p>
           </div>
         </div>
