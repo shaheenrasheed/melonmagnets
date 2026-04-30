@@ -55,7 +55,7 @@ export function SpotCard({ spot }: { spot: Spot }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-2xl overflow-hidden active:scale-[0.99] transition-transform duration-150"
+      className="bg-white rounded-2xl overflow-hidden"
       style={{ border: '0.5px solid #f0f0f0', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
     >
       <PhotoCarousel photos={photos} spotName={spot.name} category={spot.category} />
